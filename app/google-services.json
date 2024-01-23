@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "499247773946",
+    "project_id": "florescer-juntos",
+    "storage_bucket": "florescer-juntos.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499247773946:android:39a71a8c1643a074873143",
+        "android_client_info": {
+          "package_name": "com.example.florescer_juntos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7vVUQCDIraKIeHbK7V2XLwnU4bXpThI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

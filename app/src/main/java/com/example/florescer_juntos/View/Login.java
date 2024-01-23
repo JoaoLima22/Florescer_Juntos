@@ -3,13 +3,11 @@ package com.example.florescer_juntos.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.florescer_juntos.MainActivity;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
@@ -41,7 +38,7 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        tvSign = findViewById(R.id.tvSign);
+        tvSign = findViewById(R.id.tvCadastro);
         googleAuth = findViewById(R.id.sign_in_button);
 
         auth = FirebaseAuth.getInstance();
@@ -67,6 +64,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 Intent it = new Intent(Login.this, Cadastro.class);
                 startActivity(it);
+                finish();
             }
         });
     }
@@ -111,7 +109,7 @@ public class Login extends AppCompatActivity {
                             database.getReference().child("users").child(user.getUid()).setValue(map);
 
                             startActivity(new Intent(Login.this, MainActivity.class));
-
+                            finish();
                         } else {
                             Toast.makeText(Login.this, "Algo errado!", Toast.LENGTH_SHORT).show();
                         }

@@ -8,93 +8,133 @@
     tools:context=".View.Cadastro">
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="219dp"
-        android:layout_height="146dp"
-        android:layout_marginTop="48dp"
+        android:id="@+id/imgTitulo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/plant" />
+        app:srcCompat="@drawable/plant"
+        style="@style/imagePlant"/>
 
     <TextView
-        android:id="@+id/titleSignUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:id="@+id/ttlCadastro"
         android:text="Crie sua conta"
-        android:textColor="#000000"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/imgTitulo"
+        style="@style/titleStyle"/>
 
     <EditText
-        android:id="@+id/edtUsername"
+        android:id="@+id/edtNome"
         style="@style/edts"
-        android:hint="Nome"
+        android:hint="Digite seu nome"
         android:inputType="text"
-        android:textColor="#000000"
-        android:textColorHint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleSignUp" />
+        app:layout_constraintTop_toBottomOf="@+id/ttlCadastro" />
+
+    <TextView
+        android:id="@+id/tvNomeC"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Nome:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtNome"
+        app:layout_constraintStart_toStartOf="@+id/edtNome" />
 
     <EditText
-        android:id="@+id/edtMail"
-        android:hint="Email"
+        android:id="@+id/edtEmail"
+        android:hint="Digite seu email"
         android:inputType="textEmailAddress"
         style="@style/edts"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/edtNome" />
+
+    <TextView
+        android:id="@+id/tvEmailC"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Email:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtEmail"
+        app:layout_constraintStart_toStartOf="@+id/edtEmail" />
 
     <EditText
-        android:id="@+id/edtPassword"
+        android:id="@+id/edtTelefone"
         style="@style/edts"
-        android:hint="Senha"
+        android:hint="Digite seu telefone"
+        android:inputType="phone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
+
+    <TextView
+        android:id="@+id/tvTelefoneC"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Telefone:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtTelefone"
+        app:layout_constraintStart_toStartOf="@+id/edtTelefone" />
+
+    <EditText
+        android:id="@+id/edtSenha"
+        style="@style/edts"
+        android:hint="Digite sua senha"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtTelefone" />
+
+    <TextView
+        android:id="@+id/tvSenhaC"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Senha:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtSenha"
+        app:layout_constraintStart_toStartOf="@+id/edtSenha" />
+
+    <EditText
+        android:id="@+id/edtSenhaConfirmar"
+        style="@style/edts"
+        android:hint="Repita sua senha"
         android:inputType="textPassword"
         android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtMail" />
+        app:layout_constraintTop_toBottomOf="@+id/edtSenha" />
 
-    <EditText
-        android:id="@+id/edtPasswordConfirm"
+    <TextView
+        android:id="@+id/tvSenhaConfirmarC"
         style="@style/edts"
-        android:hint="Confirme sua senha"
-        android:inputType="textPassword"
-        android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtPassword" />
+        android:gravity="start"
+        android:text="Confirmar senha:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtSenhaConfirmar"
+        app:layout_constraintStart_toStartOf="@+id/edtSenhaConfirmar" />
 
     <Button
-        android:id="@+id/btnSign"
+        android:id="@+id/btnCadastro"
+        style="@style/btn"
+        android:layout_width="200dp"
+        android:layout_marginTop="20dp"
         android:backgroundTint="#056098"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="CADASTRAR"
         android:textColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtPasswordConfirm"
-        style="@style/btn" />
+        app:layout_constraintTop_toBottomOf="@+id/edtSenhaConfirmar" />
 
     <TextView
         android:id="@+id/tvLogin"
-        android:layout_width="170dp"
-        android:layout_height="60dp"
-        android:gravity="center"
         android:text="LOGAR"
-        android:textSize="20sp"
-        android:textColor="#056098"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSign" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCadastro"
+        style="@style/textButtom"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

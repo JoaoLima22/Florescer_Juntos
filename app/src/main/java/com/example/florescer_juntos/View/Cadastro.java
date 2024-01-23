@@ -24,6 +24,7 @@ public class Cadastro extends AppCompatActivity {
             public void onClick(View v) {
                 Intent it = new Intent(Cadastro.this, Login.class);
                 startActivity(it);
+                finish();
             }
         });
     }

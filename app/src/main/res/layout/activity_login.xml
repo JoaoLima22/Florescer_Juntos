@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EFFFD4"
@@ -9,71 +10,69 @@
 
 
     <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="219dp"
-        android:layout_height="146dp"
-        android:layout_marginTop="48dp"
+        android:id="@+id/imgTitulo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/plant" />
+        app:srcCompat="@drawable/plant"
+        style="@style/imagePlant" />
 
     <TextView
-        android:id="@+id/titleLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:id="@+id/ttlLogin"
         android:text="Acesse sua conta"
-        android:textColor="#000000"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/imgTitulo"
+        style="@style/titleStyle" />
 
     <EditText
-        android:id="@+id/edtMailLogin"
-        android:hint="Email"
+        android:id="@+id/edtEmailLogin"
+        style="@style/edts"
+        android:hint="Digite seu email"
         android:inputType="textEmailAddress"
-        style="@style/edts"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/ttlLogin" />
+
+    <TextView
+        android:id="@+id/tvEmail"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Email:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtEmailLogin"
+        app:layout_constraintStart_toStartOf="@+id/edtEmailLogin" />
 
     <EditText
-        android:id="@+id/edtPasswordLogin"
+        android:id="@+id/edtSenhaLogin"
         style="@style/edts"
-        android:hint="Senha"
+        android:hint="Digite sua senha"
         android:inputType="textPassword"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtMailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/edtEmailLogin" />
+
+    <TextView
+        android:id="@+id/tvSenha"
+        style="@style/edts"
+        android:gravity="start"
+        android:text="Senha:"
+        android:layout_marginBottom="33dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edtSenhaLogin"
+        app:layout_constraintStart_toStartOf="@+id/edtSenhaLogin" />
 
     <Button
         android:id="@+id/btnLogin"
         style="@style/btn"
-        android:layout_marginTop="196dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="60dp"
         android:backgroundTint="#056098"
         android:text="LOGAR"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtPasswordLogin" />
-
-    <TextView
-        android:id="@+id/tvSign"
-        android:layout_width="296dp"
-        android:layout_height="61dp"
-        android:gravity="center"
-        android:text="Crie uma conta"
-        android:textSize="20sp"
-        android:textColor="#056098"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
@@ -81,7 +80,15 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSign" />
+        app:layout_constraintTop_toBottomOf="@+id/tvCadastro" />
 
+    <TextView
+        android:id="@+id/tvCadastro"
+        style="@style/textButtom"
+        android:text="Crie uma conta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
