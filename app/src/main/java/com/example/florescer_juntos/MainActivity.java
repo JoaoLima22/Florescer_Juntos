@@ -1,40 +1,44 @@
 package com.example.florescer_juntos;
 
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
-import android.widget.TextView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.florescer_juntos.View.HomeFragment;
+import com.example.florescer_juntos.View.PerfilFragment;
+import com.example.florescer_juntos.View.PostarFragment;
+import com.example.florescer_juntos.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseAuth auth;
-    TextView textView;
+    ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
+        replaceFragment(new HomeFragment());
 
-        // Corrija aqui, inicializando a textView usando findViewById
-        textView = findViewById(R.id.tview);
+        binding.barraInferior.setOnItemSelectedListener(item -> {
 
-        // Verifique se o usuário não é nulo antes de acessar seus dados
-        if (user != null) {
-            // Certifique-se de que getDisplayName() não é nulo antes de chamar toString()
-            String displayName = user.getDisplayName();
-            if (displayName != null) {
-                textView.setText(displayName);
-            } else {
-                // Lidar com o caso em que getDisplayName() é nulo
-                textView.setText("Nome de usuário indisponível");
+            if (item.getItemId()==R.id.btnAdd){
+                replaceFragment(new PostarFragment());
+            } else if (item.getItemId()==R.id.btnHome){
+                replaceFragment(new HomeFragment());
+            } else if (item.getItemId()==R.id.btnPerfil){
+                replaceFragment(new PerfilFragment());
             }
-        } else {
-            // Lidar com o caso em que o usuário é nulo
-            textView.setText("Usuário não autenticado");
-        }
+
+            return true;
+        });
+    }
+    private void replaceFragment(Fragment fragment){
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
     }
 }
