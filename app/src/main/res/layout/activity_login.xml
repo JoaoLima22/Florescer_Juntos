@@ -5,9 +5,8 @@
     android:id="@+id/tv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFFFD4"
+    android:background="@color/green"
     tools:context=".View.Login">
-
 
     <ImageView
         android:id="@+id/imgTitulo"
@@ -67,9 +66,9 @@
         style="@style/btn"
         android:layout_height="0dp"
         android:layout_marginTop="60dp"
-        android:backgroundTint="#056098"
+        android:backgroundTint="@color/blue"
         android:text="LOGAR"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />

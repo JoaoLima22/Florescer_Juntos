@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/green"
-    tools:context=".MainActivity">
+    tools:context=".View.MainActivity">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -20,10 +20,15 @@
         android:id="@+id/barraInferior"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:backgroundTint="@color/white"
+        app:itemIconTint="@color/blue"
+        app:itemRippleColor="#9C9C9C"
+        app:itemTextColor="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:menu="@menu/botoes_menu"/>
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/botoes_menu"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

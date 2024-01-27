@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EFFFD4"
+    android:background="@color/green"
     tools:context=".View.Cadastro">
 
     <ImageView
@@ -61,31 +61,13 @@
         app:layout_constraintStart_toStartOf="@+id/edtEmail" />
 
     <EditText
-        android:id="@+id/edtTelefone"
-        style="@style/edts"
-        android:hint="Digite seu telefone"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
-
-    <TextView
-        android:id="@+id/tvTelefoneC"
-        style="@style/edts"
-        android:gravity="start"
-        android:text="Telefone:"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toBottomOf="@+id/edtTelefone"
-        app:layout_constraintStart_toStartOf="@+id/edtTelefone" />
-
-    <EditText
         android:id="@+id/edtSenha"
         style="@style/edts"
         android:hint="Digite sua senha"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtTelefone" />
+        app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
 
     <TextView
         android:id="@+id/tvSenhaC"
@@ -101,7 +83,6 @@
         style="@style/edts"
         android:hint="Repita sua senha"
         android:inputType="textPassword"
-        android:textColor="#000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtSenha" />
@@ -116,13 +97,13 @@
         app:layout_constraintStart_toStartOf="@+id/edtSenhaConfirmar" />
 
     <Button
-        android:id="@+id/btnCadastro"
+        android:id="@+id/btnContinuar"
         style="@style/btn"
         android:layout_width="200dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#056098"
-        android:text="CADASTRAR"
-        android:textColor="#ffffff"
+        android:backgroundTint="@color/blue"
+        android:text="CONTINUAR"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +114,7 @@
         android:text="LOGAR"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCadastro"
+        app:layout_constraintTop_toBottomOf="@+id/btnContinuar"
         style="@style/textButtom"/>
 
 

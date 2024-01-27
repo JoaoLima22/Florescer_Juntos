@@ -1,14 +1,15 @@
 package com.example.florescer_juntos.View;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
 import com.example.florescer_juntos.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +17,8 @@ import com.example.florescer_juntos.R;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    FirebaseAuth auth;
+    TextView textView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,10 +60,31 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View rootView =  inflater.inflate(R.layout.fragment_home, container, false);
+        textView = rootView.findViewById(R.id.tview);
+        auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        // Só ocorre caso haja uma conta do google logada
+        // Verifico se o usuário não é nulo antes de acessar seus dados
+        if (user != null) {
+            String displayName = user.getDisplayName();
+            if (displayName != null) {
+                textView.setText(displayName+" google");
+            } else {
+                // Caso o nome seja nulo
+                textView.setText("Nome de usuário indisponível");
+            }
+        } else {
+            // Caso o usuário seja nulo
+            textView.setText("Usuário do google não autenticado");
+        }
+
+        return rootView;
     }
 }
