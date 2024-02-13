@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         // Só ocorre caso haja uma conta do google logada
         // Verifico se o usuário não é nulo antes de acessar seus dados
         if (user != null) {
-            String displayName = user.getDisplayName();
+            String displayName = user.getEmail();
             if (displayName != null) {
                 textView.setText(displayName+" google");
             } else {

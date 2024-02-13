@@ -70,7 +70,7 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtDesc"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@drawable/perfil_image" />
 
     <Button
         android:id="@+id/btnImagem"

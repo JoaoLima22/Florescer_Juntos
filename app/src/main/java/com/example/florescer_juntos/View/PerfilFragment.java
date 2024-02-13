@@ -4,11 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -91,7 +91,6 @@ public class PerfilFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
 
-
         // Instancio o que preciso
         tview = rootView.findViewById(R.id.tvPostar);
         imageView = rootView.findViewById(R.id.imagemPerfil);
@@ -101,9 +100,18 @@ public class PerfilFragment extends Fragment {
         databaseReference = database.getReference("usuarios");
         SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
-        // Busco os dados do usuário pelo email logado
-        String email = sp.getString("userLog", "");
-        Query usuarios = databaseReference.orderByChild("mail").equalTo(email);
+        Usuario user = new Usuario();
+        Query usuarios;
+
+        FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
+        // Busco o usário a depender de como está logado
+        if (user_Google != null) {
+            usuarios = database.getReference("users").orderByChild("id").equalTo(user_Google.getUid());
+        } else {
+            // Busco os dados do usuário pelo email logado
+            String email = sp.getString("userLog", "");
+            usuarios = databaseReference.orderByChild("mail").equalTo(email);
+        }
         usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -111,12 +119,19 @@ public class PerfilFragment extends Fragment {
                     Usuario user = new Usuario();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         // Pego os valores dos campos
-                        user.setNome(snapshot.child("name").getValue(String.class));
-                        user.setEmail(snapshot.child("mail").getValue(String.class));
-                        user.setTelefone(snapshot.child("phone").getValue(String.class));
-                        user.setSenha(snapshot.child("password").getValue(String.class));
-                        user.setImageUrl(snapshot.child("photo").getValue(String.class));
+                        String nome = snapshot.child("name").getValue(String.class);
+                        user.setNome(nome != null ? nome : "Sem nome"); //Caso algum campo venha vazio
+
+                        String email = snapshot.child("mail").getValue(String.class);
+                        user.setEmail(email != null ? email : "Sem email");
+
+                        String telefone = snapshot.child("phone").getValue(String.class);
+                        user.setTelefone(telefone != null ? telefone : "Sem telefone");
+
+                        String imageUrl = snapshot.child("photo").getValue(String.class);
+                        user.setImageUrl(imageUrl != null ? imageUrl : Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.perfil_image).toString());
                     }
+
                     // Uso os dados do usuario
                     if (isAdded()) {
                         Context context = requireContext();
@@ -141,6 +156,17 @@ public class PerfilFragment extends Fragment {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.clear();
                 editor.apply();
+
+                // Desconecta do Firebase Auth
+                FirebaseAuth.getInstance().signOut();
+                Context context = getContext();
+                if (context != null) {
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail()
+                            .build();
+                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
+                    mGoogleSignInClient.signOut();
+                }
                 startActivity(new Intent(getActivity(), Login.class));
                 getActivity().finish();
             }

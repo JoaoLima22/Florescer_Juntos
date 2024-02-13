@@ -57,6 +57,10 @@ public class Cadastro2 extends AppCompatActivity{
         storageReference = FirebaseStorage.getInstance().getReference("usuarios");
         databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
 
+        // Busco a imagem padrão
+        imageUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.perfil_image);
+        imageView.setImageURI(imageUri);
+
         // Pego os dados da activity anterior
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
         String email = sp.getString("email", "");
@@ -103,8 +107,9 @@ public class Cadastro2 extends AppCompatActivity{
     }
 
     private void salvarUsuario(Usuario user) {
-        btnCadastro.setEnabled(false); // Para não clicarem mais de uma vez no botão
         if(imageUri != null){ // Se houver imagem eu salvo ela no cloud
+            btnCadastro.setEnabled(false);// Para não clicarem mais de uma vez no botão
+            Toast.makeText(this, "Cadastrando...", Toast.LENGTH_SHORT).show();
             StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(imageUri));
             fileReference.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -147,7 +152,6 @@ public class Cadastro2 extends AppCompatActivity{
                             progressBar.setProgress((int) progress);
                         }
                     });
-
         } else {
             Toast.makeText(this, "Selecione uma imagem de perfil!", Toast.LENGTH_SHORT).show();
         }

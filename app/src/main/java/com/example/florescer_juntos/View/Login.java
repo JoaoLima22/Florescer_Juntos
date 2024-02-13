@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -70,9 +69,17 @@ public class Login extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
 
-        // Verifico se há usuário logado
+        // Verifico se há usuário logado no google
+        if(auth.getCurrentUser() != null){
+            Intent it = new Intent(Login.this, MainActivity.class);
+            startActivity(it);
+            finish();
+        }
+
+        // Verifico se há usuário logado pelo banco
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
         String email = sp.getString("userLog", "");
+
         isSaved(email, new ExistenceCheckCallback() {
             @Override
             public void onResult(boolean exists) {
@@ -204,7 +211,6 @@ public class Login extends AppCompatActivity {
 
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuth(account.getIdToken());
@@ -215,22 +221,19 @@ public class Login extends AppCompatActivity {
     }
 
     private void firebaseAuth(String idToken) {
-
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         auth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         if (task.isSuccessful()) {
+                            // Salvo os dados/atualizo essas informações automaticamente
                             FirebaseUser user = auth.getCurrentUser();
-
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("id", user.getUid());
                             map.put("name", user.getDisplayName());
-                            map.put("phone", user.getPhoneNumber());
                             map.put("photo", user.getPhotoUrl().toString());
-                            map.put("mail", user.getEmail());
+                            map.put("mail", auth.getCurrentUser().getEmail());
 
                             database.getReference().child("users").child(user.getUid()).setValue(map);
 
