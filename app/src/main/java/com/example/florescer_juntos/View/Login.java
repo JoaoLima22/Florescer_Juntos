@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -61,6 +62,8 @@ public class Login extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
+        sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+        String email = sp.getString("userLog", "");
 
         // Para o login do Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -69,29 +72,6 @@ public class Login extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
         GoogleSignIn.getClient(this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();
 
-        // Verifico se há usuário logado no google
-        if(auth.getCurrentUser() != null){
-            Intent it = new Intent(Login.this, MainActivity.class);
-            startActivity(it);
-            finish();
-        }
-
-        // Verifico se há usuário logado pelo banco
-        sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
-        String email = sp.getString("userLog", "");
-
-        isSaved(email, new ExistenceCheckCallback() {
-            @Override
-            public void onResult(boolean exists) {
-                // Se houver
-                if (exists) {
-                    startActivity(new Intent(Login.this, MainActivity.class));
-                    finish();
-                } else {
-                    // Se não houver
-                }
-            }
-        });
 
         googleAuth.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,7 +105,9 @@ public class Login extends AppCompatActivity {
                     // Testo campos vazios
                     Toast.makeText(Login.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
                 } else {
-                    isSaved(mail, new ExistenceCheckCallback() { // Verifico se existe uma conta com o email
+                    // Verifico se existe uma conta com esse email
+                    UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+                    usuarioDAO.isSaved(mail, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() { // Verifico se existe uma conta com o email
                         @Override
                         public void onResult(boolean exists) {
                             if (!exists) {
@@ -135,22 +117,17 @@ public class Login extends AppCompatActivity {
                                 edtSenha.setText("");
                             } else {
                                 // Se existir busco o usuário
-                                Query usuarios = databaseReference.orderByChild("mail").equalTo(mail);
-                                usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
+                                usuarioDAO.getUsuarioAsync(mail, FirebaseDatabase.getInstance().getReference("usuarios"), Login.this, new UsuarioDAO.UsuarioCallback() {
                                     @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            Usuario user = new Usuario();
-                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                                user.setSenha(snapshot.child("password").getValue(String.class));
-                                            }
-                                            // Verifico se a senha é válida
-                                            if (!user.getSenha().equals(pass)) {
+                                    public void onUsuarioCarregado(Usuario usuario) {
+                                        if (usuario != null) {
+                                            if (!usuario.getSenha().equals(pass)) {
                                                 // Se não for
                                                 edtSenha.setError("Senha inválida!");
                                                 edtSenha.setText("");
                                             } else {
                                                 // Se for
+                                                Toast.makeText(Login.this, "Logando...", Toast.LENGTH_SHORT).show();
                                                 SharedPreferences.Editor editor = sp.edit();
                                                 editor.clear();
                                                 editor.putString("userLog", mail);
@@ -159,13 +136,9 @@ public class Login extends AppCompatActivity {
                                                 startActivity(new Intent(Login.this, MainActivity.class));
                                                 finish();
                                             }
+                                        } else {
+                                            Log.d("Usuario", "Usuário não encontrado");
                                         }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        // Ocorreu um erro durante a leitura dos dados
-                                        Log.e("Firebase", "Erro ao ler dados", databaseError.toException());
                                     }
                                 });
                             }
@@ -175,30 +148,6 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-
-    // Função que verifica se há um usuário logado pelo email
-    public void isSaved(String email, ExistenceCheckCallback callback) {
-        Query usuarios = databaseReference.orderByChild("mail").equalTo(email);
-        usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean exists = dataSnapshot.exists();
-                callback.onResult(exists);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Ocorreu um erro durante a leitura dos dados
-                Log.e("Firebase", "Erro ao ler dados", databaseError.toException());
-                callback.onResult(false); // Assumindo que um erro significa que não existe
-            }
-        });
-    }
-
-    public interface ExistenceCheckCallback {
-        void onResult(boolean exists);
-    }
-
 // ------------------ Autenticação do Google ------------------
     private void googleSignIn() {
         Intent it = googleSignInClient.getSignInIntent();
@@ -208,7 +157,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Toast.makeText(Login.this, "Logando...", Toast.LENGTH_SHORT).show();
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -232,9 +181,9 @@ public class Login extends AppCompatActivity {
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("id", user.getUid());
                             map.put("name", user.getDisplayName());
-                            map.put("photo", user.getPhotoUrl().toString());
+                            // Em dúvida se atualizo a foto sempre ou não
+                            //map.put("photo", user.getPhotoUrl().toString());
                             map.put("mail", auth.getCurrentUser().getEmail());
-
                             database.getReference().child("users").child(user.getUid()).setValue(map);
 
                             startActivity(new Intent(Login.this, MainActivity.class));

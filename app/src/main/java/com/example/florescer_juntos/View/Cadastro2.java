@@ -22,8 +22,6 @@ import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -37,7 +35,6 @@ public class Cadastro2 extends AppCompatActivity{
     private Uri imageUri;
     private int PICK_IMAGE_REQUEST = 1;
     private StorageReference storageReference;
-    private DatabaseReference databaseReference;
     private SharedPreferences sp;
 
     @SuppressLint("MissingInflatedId")
@@ -53,20 +50,18 @@ public class Cadastro2 extends AppCompatActivity{
         edtDescricao = findViewById(R.id.edtDesc);
         imageView = findViewById(R.id.imagemCadastro);
         progressBar = findViewById(R.id.progressBar);
-
         storageReference = FirebaseStorage.getInstance().getReference("usuarios");
-        databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
 
         // Busco a imagem padrão
         imageUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.drawable.perfil_image);
-        imageView.setImageURI(imageUri);
+        //imageView.setImageURI(imageUri);
 
         // Pego os dados da activity anterior
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
-        String email = sp.getString("email", "");
-        String nome = sp.getString("nome", "");
-        String senha = sp.getString("senha", "");
-        Usuario user = new Usuario(nome, email, senha, "", "", "");
+        Usuario user = new Usuario();
+        user.setNome(sp.getString("nome", ""));
+        user.setEmail(sp.getString("email", ""));
+        user.setSenha(sp.getString("senha", ""));
 
         btnImagem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +103,8 @@ public class Cadastro2 extends AppCompatActivity{
 
     private void salvarUsuario(Usuario user) {
         if(imageUri != null){ // Se houver imagem eu salvo ela no cloud
-            btnCadastro.setEnabled(false);// Para não clicarem mais de uma vez no botão
+            btnCadastro.setEnabled(false);
+            btnImagem.setEnabled(false);// Para não clicarem mais de uma vez no botão
             Toast.makeText(this, "Cadastrando...", Toast.LENGTH_SHORT).show();
             StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(imageUri));
             fileReference.putFile(imageUri)
@@ -121,9 +117,8 @@ public class Cadastro2 extends AppCompatActivity{
                                 public void onSuccess(Uri downloadUrl) {
                                     // Salvo a url no usuário
                                     user.setImageUrl(downloadUrl.toString());
-                                    UsuarioDAO userDao = new UsuarioDAO(user);
-
                                     // Salvo o usuário
+                                    UsuarioDAO userDao = new UsuarioDAO(user);
                                     userDao.save();
 
                                     // Limpo o shared e salvo o email do usuário logado
@@ -134,6 +129,7 @@ public class Cadastro2 extends AppCompatActivity{
 
                                     startActivity(new Intent(Cadastro2.this, MainActivity.class));
                                     btnCadastro.setEnabled(true);
+                                    btnImagem.setEnabled(true);
                                     finish();
                                 }
                             });
@@ -141,8 +137,9 @@ public class Cadastro2 extends AppCompatActivity{
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(Cadastro2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(Cadastro2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             btnCadastro.setEnabled(true);
+                            btnImagem.setEnabled(true);
                         }
                     }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override

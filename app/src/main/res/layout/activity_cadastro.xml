@@ -7,115 +7,131 @@
     android:background="@color/green"
     tools:context=".View.Cadastro">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/white_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/ttlCadastro"
+            style="@style/titleStyle"
+            android:layout_marginTop="80dp"
+            android:text="Crie sua conta"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/edtNome"
+            style="@style/edts"
+            android:hint="Digite seu nome"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ttlCadastro" />
+
+        <TextView
+            android:id="@+id/tvNomeC"
+            style="@style/edts"
+            android:gravity="start"
+            android:text="Nome:"
+            android:layout_marginBottom="33dp"
+            app:layout_constraintBottom_toBottomOf="@+id/edtNome"
+            app:layout_constraintStart_toStartOf="@+id/edtNome" />
+
+        <EditText
+            android:id="@+id/edtEmail"
+            android:hint="Digite seu email"
+            android:inputType="textEmailAddress"
+            style="@style/edts"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtNome" />
+
+        <TextView
+            android:id="@+id/tvEmailC"
+            style="@style/edts"
+            android:gravity="start"
+            android:text="Email:"
+            android:layout_marginBottom="33dp"
+            app:layout_constraintBottom_toBottomOf="@+id/edtEmail"
+            app:layout_constraintStart_toStartOf="@+id/edtEmail" />
+
+        <EditText
+            android:id="@+id/edtSenha"
+            style="@style/edts"
+            android:hint="Digite sua senha"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
+
+        <TextView
+            android:id="@+id/tvSenhaC"
+            style="@style/edts"
+            android:gravity="start"
+            android:text="Senha:"
+            android:layout_marginBottom="33dp"
+            app:layout_constraintBottom_toBottomOf="@+id/edtSenha"
+            app:layout_constraintStart_toStartOf="@+id/edtSenha" />
+
+        <EditText
+            android:id="@+id/edtSenhaConfirmar"
+            style="@style/edts"
+            android:hint="Repita sua senha"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtSenha" />
+
+        <TextView
+            android:id="@+id/tvSenhaConfirmarC"
+            style="@style/edts"
+            android:gravity="start"
+            android:text="Confirmar senha:"
+            android:layout_marginBottom="33dp"
+            app:layout_constraintBottom_toBottomOf="@+id/edtSenhaConfirmar"
+            app:layout_constraintStart_toStartOf="@+id/edtSenhaConfirmar" />
+
+        <Button
+            android:id="@+id/btnContinuar"
+            style="@style/btn"
+            android:layout_width="200dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/blue"
+            android:text="CONTINUAR"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtSenhaConfirmar" />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:text="LOGAR"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnContinuar"
+            style="@style/textButtom"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageView
         android:id="@+id/imgTitulo"
+        style="@style/imagePlant"
+        android:layout_marginBottom="-80dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/plant"
-        style="@style/imagePlant"/>
-
-    <TextView
-        android:id="@+id/ttlCadastro"
-        android:text="Crie sua conta"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgTitulo"
-        style="@style/titleStyle"/>
-
-    <EditText
-        android:id="@+id/edtNome"
-        style="@style/edts"
-        android:hint="Digite seu nome"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ttlCadastro" />
-
-    <TextView
-        android:id="@+id/tvNomeC"
-        style="@style/edts"
-        android:gravity="start"
-        android:text="Nome:"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toBottomOf="@+id/edtNome"
-        app:layout_constraintStart_toStartOf="@+id/edtNome" />
-
-    <EditText
-        android:id="@+id/edtEmail"
-        android:hint="Digite seu email"
-        android:inputType="textEmailAddress"
-        style="@style/edts"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtNome" />
-
-    <TextView
-        android:id="@+id/tvEmailC"
-        style="@style/edts"
-        android:gravity="start"
-        android:text="Email:"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toBottomOf="@+id/edtEmail"
-        app:layout_constraintStart_toStartOf="@+id/edtEmail" />
-
-    <EditText
-        android:id="@+id/edtSenha"
-        style="@style/edts"
-        android:hint="Digite sua senha"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
-
-    <TextView
-        android:id="@+id/tvSenhaC"
-        style="@style/edts"
-        android:gravity="start"
-        android:text="Senha:"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toBottomOf="@+id/edtSenha"
-        app:layout_constraintStart_toStartOf="@+id/edtSenha" />
-
-    <EditText
-        android:id="@+id/edtSenhaConfirmar"
-        style="@style/edts"
-        android:hint="Repita sua senha"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtSenha" />
-
-    <TextView
-        android:id="@+id/tvSenhaConfirmarC"
-        style="@style/edts"
-        android:gravity="start"
-        android:text="Confirmar senha:"
-        android:layout_marginBottom="33dp"
-        app:layout_constraintBottom_toBottomOf="@+id/edtSenhaConfirmar"
-        app:layout_constraintStart_toStartOf="@+id/edtSenhaConfirmar" />
-
-    <Button
-        android:id="@+id/btnContinuar"
-        style="@style/btn"
-        android:layout_width="200dp"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/blue"
-        android:text="CONTINUAR"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtSenhaConfirmar" />
-
-    <TextView
-        android:id="@+id/tvLogin"
-        android:text="LOGAR"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnContinuar"
-        style="@style/textButtom"/>
-
+        app:srcCompat="@drawable/plant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green"
+    tools:context=".View.EditarPerfilFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/ttlEdtPerfil"
+                    style="@style/titleStyle"
+                    android:layout_marginTop="15dp"
+                    android:text="Edite seu perfil"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/edtNomeEdtPerfil"
+                    style="@style/edts"
+                    android:layout_marginTop="30dp"
+                    android:hint="Digite seu nome"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ttlEdtPerfil" />
+
+                <TextView
+                    android:id="@+id/tvNome"
+                    style="@style/edts"
+                    android:layout_marginBottom="33dp"
+                    android:gravity="start"
+                    android:text="Nome:"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtNomeEdtPerfil"
+                    app:layout_constraintStart_toStartOf="@+id/edtNomeEdtPerfil" />
+
+                <EditText
+                    android:id="@+id/edtTelefoneEdtPerfil"
+                    style="@style/edts"
+                    android:layout_marginTop="20dp"
+                    android:hint="Digite seu telefone"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtNomeEdtPerfil" />
+
+                <TextView
+                    android:id="@+id/tvTelefone"
+                    style="@style/edts"
+                    android:layout_marginBottom="33dp"
+                    android:gravity="start"
+                    android:text="Telefone:"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtTelefoneEdtPerfil"
+                    app:layout_constraintStart_toStartOf="@+id/edtTelefoneEdtPerfil" />
+
+                <EditText
+                    android:id="@+id/edtDescEdtPerfil"
+                    style="@style/edts"
+                    android:layout_marginTop="20dp"
+                    android:hint="Digite sua descrição"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtTelefoneEdtPerfil" />
+
+                <TextView
+                    android:id="@+id/tvDesc"
+                    style="@style/edts"
+                    android:layout_marginBottom="33dp"
+                    android:gravity="start"
+                    android:text="Descrição:"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtDescEdtPerfil"
+                    app:layout_constraintStart_toStartOf="@+id/edtDescEdtPerfil" />
+
+                <ImageView
+                    android:id="@+id/imagemEditar"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtDescEdtPerfil"
+                    tools:srcCompat="@drawable/perfil_image" />
+
+                <Button
+                    android:id="@+id/btnImagemEditar"
+                    style="@style/btn"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Selecionar Imagem"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imagemEditar" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
+
+                <Button
+                    android:id="@+id/btnEditarPerfil"
+                    style="@style/btn"
+                    android:layout_width="160dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Confirmar"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toEndOf="@+id/btnCancelarPerfil"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnCancelarPerfil"
+                    style="@style/btn"
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Cancelar"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

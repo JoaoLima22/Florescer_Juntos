@@ -1,22 +1,21 @@
 package com.example.florescer_juntos.Controler;
 
+import android.app.Activity;
+import android.net.Uri;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.example.florescer_juntos.Model.Usuario;
+import com.example.florescer_juntos.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 
 public class UsuarioDAO {
     private Usuario user;
-    private DatabaseReference databaseReference;
 
     public interface UsuarioCallback {
         void onUsuarioCarregado(Usuario usuario);
@@ -25,11 +24,11 @@ public class UsuarioDAO {
 
     public UsuarioDAO(Usuario user) {
         this.user = user;
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
     }
 
+    // Método que salva um usuário
     public Boolean save(){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", user.getNome());
         map.put("phone", user.getTelefone());
@@ -42,8 +41,8 @@ public class UsuarioDAO {
         return true;
     }
 
-
-    public void getUsuarioAsync(String email, UsuarioCallback callback) {
+    // Função que retorna o usuário de forma assincrona
+    public void getUsuarioAsync(String email, DatabaseReference databaseReference, Activity activity, UsuarioCallback callback) {
         this.callback = callback;
         Query usuarios = databaseReference.orderByChild("mail").equalTo(email);
         usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -52,11 +51,24 @@ public class UsuarioDAO {
                 if (dataSnapshot.exists()) {
                     Usuario user = new Usuario();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        user.setNome(snapshot.child("name").getValue(String.class));
-                        user.setEmail(snapshot.child("mail").getValue(String.class));
-                        user.setTelefone(snapshot.child("phone").getValue(String.class));
-                        user.setSenha(snapshot.child("password").getValue(String.class));
-                        user.setImageUrl(snapshot.child("photo").getValue(String.class));
+                        String nome = snapshot.child("name").getValue(String.class);
+                        user.setNome(nome != null ? nome : ""); //Caso algum campo venha vazio
+
+                        String email = snapshot.child("mail").getValue(String.class);
+                        user.setEmail(email != null ? email : "");
+
+                        String telefone = snapshot.child("phone").getValue(String.class);
+                        user.setTelefone(telefone != null ? telefone : "");
+
+                        String descricao = snapshot.child("desc").getValue(String.class);
+                        user.setDescricao(descricao != null ? descricao : "");
+
+                        String senha = snapshot.child("password").getValue(String.class);
+                        user.setSenha(senha != null ? senha : "");
+
+                        String imageUrl = snapshot.child("photo").getValue(String.class);
+                        user.setImageUrl(imageUrl != null ? imageUrl : Uri.parse("android.resource://" + activity.getPackageName() + "/" + R.drawable.perfil_image).toString());
+
                     }
                     // Notificar a interface quando os dados estiverem prontos
                     callback.onUsuarioCarregado(user);
@@ -70,30 +82,43 @@ public class UsuarioDAO {
         });
     }
 
-
-    public Boolean isSaved(String email){
-        Boolean is = false;
-        final int[] count = {0};
+    public interface ExistenceCheckCallback {
+        void onResult(boolean exists);
+    }
+    // Função que verifica se há um usuário salvo com determinado email
+    public void isSaved(String email, DatabaseReference databaseReference, ExistenceCheckCallback callback) {
         Query usuarios = databaseReference.orderByChild("mail").equalTo(email);
         usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        count[0] = 1;
-                    }
-                }
+                boolean exists = dataSnapshot.exists();
+                callback.onResult(exists);
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Ocorreu um erro durante a leitura dos dados
                 Log.e("Firebase", "Erro ao ler dados", databaseError.toException());
+                callback.onResult(false);
             }
         });
+    }
 
-        if(count[0] != 0){is = true;}
+    // Função que deleta usuários por email
+    public void deleteUsuarioByEmail(String email, DatabaseReference databaseReference) {
+        Query query = databaseReference.orderByChild("mail").equalTo(email);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue();
+                }
+            }
 
-        return is;
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Erro
+            }
+        });
     }
 
     public Usuario getUser() {

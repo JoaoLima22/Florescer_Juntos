@@ -1,13 +1,15 @@
 package com.example.florescer_juntos.View;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -23,12 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,11 +34,10 @@ import com.google.firebase.database.ValueEventListener;
  * create an instance of this fragment.
  */
 public class PerfilFragment extends Fragment {
-    TextView tview;
+    TextView tvNome, tvEmail, tvTelefone, tvDescricao;
     ImageView imageView;
-    Button btnLogout;
-    FirebaseDatabase database;
-    DatabaseReference databaseReference;
+    Button btnLogout, btnEditarLogin, btnEditarPerfil, btnDelete;
+    SharedPreferences sp;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,86 +89,127 @@ public class PerfilFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_perfil, container, false);
 
         // Instancio o que preciso
-        tview = rootView.findViewById(R.id.tvPostar);
+        tvNome = rootView.findViewById(R.id.tvNome);
+        tvEmail = rootView.findViewById(R.id.tvEmail);
+        tvTelefone = rootView.findViewById(R.id.tvTelefone);
+        tvDescricao = rootView.findViewById(R.id.tvDescricao);
         imageView = rootView.findViewById(R.id.imagemPerfil);
         btnLogout = rootView.findViewById(R.id.btnLogout);
+        btnEditarLogin = rootView.findViewById(R.id.btnEditarLogin);
+        btnEditarPerfil = rootView.findViewById(R.id.btnEditarPerfil);
+        btnDelete = rootView.findViewById(R.id.btnDelete);
+        sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
-        database = FirebaseDatabase.getInstance();
-        databaseReference = database.getReference("usuarios");
-        SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+        UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+        String emailUsuario = "";
+        String reference = "";
 
-        Usuario user = new Usuario();
-        Query usuarios;
-
+        // Verifico qual tipo de usuario
         FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
-        // Busco o usário a depender de como está logado
         if (user_Google != null) {
-            usuarios = database.getReference("users").orderByChild("id").equalTo(user_Google.getUid());
+            emailUsuario = user_Google.getEmail();
+            reference = "users";
+            btnEditarLogin.setEnabled(false);
         } else {
+            btnEditarLogin.setVisibility(View.VISIBLE);
             // Busco os dados do usuário pelo email logado
-            String email = sp.getString("userLog", "");
-            usuarios = databaseReference.orderByChild("mail").equalTo(email);
+            sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+            emailUsuario = sp.getString("userLog", "");
+            reference = "usuarios";
         }
-        usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        // Busco o usuario e mostro seus dados
+        usuarioDAO.getUsuarioAsync(emailUsuario, FirebaseDatabase.getInstance().getReference(reference), getActivity(), new UsuarioDAO.UsuarioCallback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Usuario user = new Usuario();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        // Pego os valores dos campos
-                        String nome = snapshot.child("name").getValue(String.class);
-                        user.setNome(nome != null ? nome : "Sem nome"); //Caso algum campo venha vazio
-
-                        String email = snapshot.child("mail").getValue(String.class);
-                        user.setEmail(email != null ? email : "Sem email");
-
-                        String telefone = snapshot.child("phone").getValue(String.class);
-                        user.setTelefone(telefone != null ? telefone : "Sem telefone");
-
-                        String imageUrl = snapshot.child("photo").getValue(String.class);
-                        user.setImageUrl(imageUrl != null ? imageUrl : Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.perfil_image).toString());
-                    }
-
-                    // Uso os dados do usuario
+            public void onUsuarioCarregado(Usuario usuario) {
+                if (usuario != null) {
                     if (isAdded()) {
                         Context context = requireContext();
                         Glide.with(context)
-                                .load(user.getImageUrl())
+                                .load(usuario.getImageUrl())
                                 .into(imageView);
-                        tview.setText(user.getNome());
+                        tvNome.setText(usuario.getNome());
+                        tvEmail.setText(usuario.getEmail());
+                        tvTelefone.setText(usuario.getTelefone());
+                        tvDescricao.setText(usuario.getDescricao());
                     }
+                } else {
+                    Log.d("Usuario", "Usuário não encontrado");
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Ocorreu um erro durante a leitura dos dados
-                Log.e("Firebase", "Erro ao ler dados", databaseError.toException());
             }
         });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Limpo o SP e volto para login
-                SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.apply();
+                logout();
+            }
+        });
+        btnEditarLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {replaceFragment(new EditarLoginFragment());}
+        });
+        btnEditarPerfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {replaceFragment(new EditarPerfilFragment());}
+        });
 
-                // Desconecta do Firebase Auth
-                FirebaseAuth.getInstance().signOut();
-                Context context = getContext();
-                if (context != null) {
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestEmail()
-                            .build();
-                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
-                    mGoogleSignInClient.signOut();
-                }
-                startActivity(new Intent(getActivity(), Login.class));
-                getActivity().finish();
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Gero um alerta
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirmação");
+                builder.setMessage("Tem certeza que deseja excluir este usuário?");
+                builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Se confirmar excluo o usuario
+                        FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user_Google != null) {usuarioDAO.deleteUsuarioByEmail(user_Google.getEmail(), FirebaseDatabase.getInstance().getReference("users"));
+                        } else {usuarioDAO.deleteUsuarioByEmail(sp.getString("userLog", ""), FirebaseDatabase.getInstance().getReference("usuarios"));}
+                        logout();
+                    }
+                });
+                builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // O usuário cancelou, não faz nada
+                    }
+                });
+                builder.show();
             }
         });
 
         return rootView;
+    }
+
+    // Função que da logout no usuario
+    public void logout(){
+        // Limpo o SP e volto para login
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        editor.apply();
+
+        // Desconecta do Firebase Auth
+        FirebaseAuth.getInstance().signOut();
+        Context context = getContext();
+        if (context != null) {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .build();
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
+            mGoogleSignInClient.signOut();
+        }
+        startActivity(new Intent(getActivity(), Splash.class));
+        getActivity().finish();
+    }
+
+    // Função que altera o fragment
+    private void replaceFragment(Fragment fragment){
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
     }
 }

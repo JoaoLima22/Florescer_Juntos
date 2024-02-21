@@ -1,24 +1,22 @@
 package com.example.florescer_juntos.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.florescer_juntos.Controler.UsuarioDAO;
+import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 public class Cadastro extends AppCompatActivity {
     TextView tvlogin;
@@ -31,6 +29,7 @@ public class Cadastro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
+
         // Instancio o que preciso
         tvlogin = findViewById(R.id.tvLogin);
         btnContinuar = findViewById(R.id.btnContinuar);
@@ -38,9 +37,38 @@ public class Cadastro extends AppCompatActivity {
         txtEmail = findViewById(R.id.edtEmail);
         txtSenha = findViewById(R.id.edtSenha);
         txtSenhaCon = findViewById(R.id.edtSenhaConfirmar);
-
         databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+
+        // Método que verifica alterações no campo
+        txtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Verifico o email após o usuário modificar-lo
+                String email = s.toString().trim();
+                if (isEmailValid(email)) { // Vejo se é válido
+                    UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+                    usuarioDAO.isSaved(email, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() {
+                        @Override
+                        public void onResult(boolean exists) {
+                            // Se houver conta
+                            if (exists) { // Caso já exista uma conta com essa senha...
+                                txtEmail.setError("Email já em uso!");
+                            } else {
+                                // Email válido...
+                            }
+                        }
+                    });
+                } else {
+                    // Se o email for inválido...
+                    txtEmail.setError("Email inválido!");
+                }
+            }
+        });
 
         tvlogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +97,8 @@ public class Cadastro extends AppCompatActivity {
                     Toast.makeText(Cadastro.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Verifico se já existe alguma conta com aquele email
-                    isSaved(mail, new Login.ExistenceCheckCallback() {
+                    UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+                    usuarioDAO.isSaved(mail, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() {
                         @Override
                         public void onResult(boolean exists) {
                             // Se houver conta
@@ -105,25 +134,8 @@ public class Cadastro extends AppCompatActivity {
         });
     }
 
-    // Função que verifica se há um usuário logado pelo email
-    public void isSaved(String email, Login.ExistenceCheckCallback callback) {
-        Query usuarios = databaseReference.orderByChild("mail").equalTo(email);
-        usuarios.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                boolean exists = dataSnapshot.exists();
-                callback.onResult(exists);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Ocorreu um erro durante a leitura dos dados
-                Log.e("Firebase", "Erro ao ler dados", databaseError.toException());
-                callback.onResult(false); // Assumindo que um erro significa que não existe
-            }
-        });
-    }
-    public interface ExistenceCheckCallback {
-        void onResult(boolean exists);
+    // Funcção que verifica o email
+    private boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
