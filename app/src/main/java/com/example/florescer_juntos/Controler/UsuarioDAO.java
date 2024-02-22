@@ -6,6 +6,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
+import java.util.Map;
 
 public class UsuarioDAO {
     private Usuario user;
@@ -51,6 +54,8 @@ public class UsuarioDAO {
                 if (dataSnapshot.exists()) {
                     Usuario user = new Usuario();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        user.setId(snapshot.getKey());
+
                         String nome = snapshot.child("name").getValue(String.class);
                         user.setNome(nome != null ? nome : ""); //Caso algum campo venha vazio
 
@@ -120,6 +125,22 @@ public class UsuarioDAO {
             }
         });
     }
+    public void updateUsuario(String userId, Map<String, Object> updates, DatabaseReference databaseReference) {
+        databaseReference.child(user.getId()).setValue(updates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firebase", "Usuário atualizado com sucesso");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Firebase", "Erro ao atualizar usuário", e);
+                    }
+                });
+    }
+
 
     public Usuario getUser() {
         return user;

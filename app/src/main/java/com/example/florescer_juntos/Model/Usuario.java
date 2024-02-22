@@ -4,6 +4,7 @@ public class Usuario extends Pessoa{
     private String telefone;
     private String descricao;
     private String imageUrl;
+    private String id;
 
     public Usuario() {//
     }
@@ -30,6 +31,14 @@ public class Usuario extends Pessoa{
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getImageUrl() {

@@ -184,7 +184,7 @@ public class Login extends AppCompatActivity {
                             // Em dúvida se atualizo a foto sempre ou não
                             //map.put("photo", user.getPhotoUrl().toString());
                             map.put("mail", auth.getCurrentUser().getEmail());
-                            database.getReference().child("users").child(user.getUid()).setValue(map);
+                            database.getReference().child("users").child(user.getUid()).updateChildren(map);
 
                             startActivity(new Intent(Login.this, MainActivity.class));
                             finish();

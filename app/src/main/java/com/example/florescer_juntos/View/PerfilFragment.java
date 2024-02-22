@@ -36,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class PerfilFragment extends Fragment {
     TextView tvNome, tvEmail, tvTelefone, tvDescricao;
     ImageView imageView;
-    Button btnLogout, btnEditarLogin, btnEditarPerfil, btnDelete;
+    Button btnLogout, btnEditarPerfil, btnDelete;
     SharedPreferences sp;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -95,7 +95,6 @@ public class PerfilFragment extends Fragment {
         tvDescricao = rootView.findViewById(R.id.tvDescricao);
         imageView = rootView.findViewById(R.id.imagemPerfil);
         btnLogout = rootView.findViewById(R.id.btnLogout);
-        btnEditarLogin = rootView.findViewById(R.id.btnEditarLogin);
         btnEditarPerfil = rootView.findViewById(R.id.btnEditarPerfil);
         btnDelete = rootView.findViewById(R.id.btnDelete);
         sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
@@ -109,9 +108,7 @@ public class PerfilFragment extends Fragment {
         if (user_Google != null) {
             emailUsuario = user_Google.getEmail();
             reference = "users";
-            btnEditarLogin.setEnabled(false);
         } else {
-            btnEditarLogin.setVisibility(View.VISIBLE);
             // Busco os dados do usuário pelo email logado
             sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
             emailUsuario = sp.getString("userLog", "");
@@ -144,10 +141,6 @@ public class PerfilFragment extends Fragment {
             public void onClick(View v) {
                 logout();
             }
-        });
-        btnEditarLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {replaceFragment(new EditarLoginFragment());}
         });
         btnEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override

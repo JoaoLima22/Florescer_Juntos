@@ -147,20 +147,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/btnEditarLogin"
-                    style="@style/btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/blue"
-                    android:text="Editar Login"
-                    android:textColor="@color/white"
-                    android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btnEditarPerfil" />
-
-                <Button
                     android:id="@+id/btnLogout"
                     style="@style/btn"
                     android:layout_width="wrap_content"
