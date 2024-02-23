@@ -126,7 +126,7 @@ public class UsuarioDAO {
         });
     }
     public void updateUsuario(String userId, Map<String, Object> updates, DatabaseReference databaseReference) {
-        databaseReference.child(user.getId()).setValue(updates)
+        databaseReference.child(userId).setValue(updates)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

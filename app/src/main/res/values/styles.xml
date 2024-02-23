@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="txtStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">20sp</item>
-    </style>
+        <style name="txtStyle">
+            <item name="android:layout_width">wrap_content</item>
+            <item name="android:layout_height">wrap_content</item>
+            <item name="android:fontFamily">sans-serif-medium</item>
+            <item name="android:textColor">#000000</item>
+            <item name="android:textSize">20sp</item>
+        </style>
 
         <style name="edts">
             <item name="android:layout_width">wrap_content</item>
@@ -30,25 +30,35 @@
             <item name="android:textSize">20sp</item>
         </style>
 
-    <style name="imagePlant">
-        <item name="android:layout_width">219dp</item>
-        <item name="android:layout_height">146dp</item>
-        <item name="android:layout_marginTop">48dp</item>
-    </style>
+        <style name="CustomProgressDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+            <item name="android:windowBackground">@android:color/transparent</item>
+            <item name="android:background">@drawable/white_background</item>
+            <item name="android:textColor">@color/black</item>
+            <item name="android:textSize">20dp</item>
+            <!-- Outros atributos personalizados -->
+        </style>
 
-    <style name="titleStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">#000000</item>
-        <item name="android:textSize">26sp</item>
-    </style>
 
-    <style name="textButtom">
-        <item name="android:layout_width">296dp</item>
-        <item name="android:layout_height">61dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">#056098</item>
-        <item name="android:textSize">20sp</item>
-    </style>
+
+        <style name="imagePlant">
+            <item name="android:layout_width">219dp</item>
+            <item name="android:layout_height">146dp</item>
+            <item name="android:layout_marginTop">48dp</item>
+        </style>
+
+        <style name="titleStyle">
+            <item name="android:layout_width">wrap_content</item>
+            <item name="android:layout_height">wrap_content</item>
+            <item name="android:fontFamily">sans-serif-medium</item>
+            <item name="android:textColor">#000000</item>
+            <item name="android:textSize">26sp</item>
+        </style>
+
+        <style name="textButtom">
+            <item name="android:layout_width">296dp</item>
+            <item name="android:layout_height">61dp</item>
+            <item name="android:gravity">center</item>
+            <item name="android:textColor">#056098</item>
+            <item name="android:textSize">20sp</item>
+        </style>
 </resources>
