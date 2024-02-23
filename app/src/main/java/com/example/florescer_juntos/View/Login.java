@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,12 +30,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
@@ -64,6 +62,34 @@ public class Login extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
         String email = sp.getString("userLog", "");
+
+
+        edtSenha.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String senha = s.toString().trim();
+                if (senha.length()<8) {
+                    edtSenha.setError("Digite pelo menos 8 digitos!");
+                }
+            }
+        });
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String email = s.toString().trim();
+                if (!isEmailValid(email)) {
+                    edtEmail.setError("Email inválido!");
+                }
+            }
+        });
 
         // Para o login do Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -104,6 +130,14 @@ public class Login extends AppCompatActivity {
                 if (mail.equals("") || pass.equals("")) {
                     // Testo campos vazios
                     Toast.makeText(Login.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+                } else if (pass.length()<8) {
+                    edtSenha.setError("Digite pelo menos 8 digitos!");
+                    edtSenha.setText("");
+                    Toast.makeText(Login.this, "Senha inválida!", Toast.LENGTH_LONG).show();
+                } else if (!isEmailValid(mail)){
+                    edtEmail.setError("Email inválido!");
+                    edtEmail.setText("");
+                    Toast.makeText(Login.this, "Email inválido!", Toast.LENGTH_LONG).show();
                 } else {
                     // Verifico se existe uma conta com esse email
                     UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
@@ -114,7 +148,6 @@ public class Login extends AppCompatActivity {
                                 // Se não existir
                                 edtEmail.setText("");
                                 edtEmail.setError("Email inválido!");
-                                edtSenha.setText("");
                             } else {
                                 // Se existir busco o usuário
                                 usuarioDAO.getUsuarioAsync(mail, FirebaseDatabase.getInstance().getReference("usuarios"), Login.this, new UsuarioDAO.UsuarioCallback() {
@@ -122,7 +155,7 @@ public class Login extends AppCompatActivity {
                                     public void onUsuarioCarregado(Usuario usuario) {
                                         if (usuario != null) {
                                             if (!usuario.getSenha().equals(pass)) {
-                                                // Se não for
+                                                // Se não for iguais
                                                 edtSenha.setError("Senha inválida!");
                                                 edtSenha.setText("");
                                             } else {
@@ -148,6 +181,11 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+    // Funcção que verifica o email
+    private boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
 // ------------------ Autenticação do Google ------------------
     private void googleSignIn() {
         Intent it = googleSignInClient.getSignInIntent();
@@ -181,8 +219,6 @@ public class Login extends AppCompatActivity {
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("id", user.getUid());
                             map.put("name", user.getDisplayName());
-                            // Em dúvida se atualizo a foto sempre ou não
-                            //map.put("photo", user.getPhotoUrl().toString());
                             map.put("mail", auth.getCurrentUser().getEmail());
                             database.getReference().child("users").child(user.getUid()).updateChildren(map);
 

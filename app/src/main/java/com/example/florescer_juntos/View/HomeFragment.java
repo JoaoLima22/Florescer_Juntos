@@ -1,21 +1,13 @@
 package com.example.florescer_juntos.View;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.example.florescer_juntos.Controler.UsuarioDAO;
-import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,37 +64,6 @@ public class HomeFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_home, container, false);
         textView = rootView.findViewById(R.id.tview);
 
-        // Aqui apenas mostro o email do usuario logado, pode deletar
-        UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
-        String emailUsuario = "";
-        String reference = "";
-
-        FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
-        if (user_Google != null) {
-            emailUsuario = user_Google.getEmail();
-            reference = "users";
-
-        } else {
-            // Busco os dados do usuário pelo email logado
-            SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
-            String email = sp.getString("userLog", "");
-            emailUsuario = email;
-            reference = "usuarios";
-        }
-
-        usuarioDAO.getUsuarioAsync(emailUsuario, FirebaseDatabase.getInstance().getReference(reference), getActivity(), new UsuarioDAO.UsuarioCallback() {
-            @Override
-            public void onUsuarioCarregado(Usuario usuario) {
-                // Faça o que precisa ser feito com o usuário carregado
-                // Por exemplo, atualize a interface com os dados do usuário
-                if (usuario != null) {
-                    textView.setText(usuario.getEmail());
-                    Log.d("Usuario", "Nome: " + usuario.getNome() + ", Email: " + usuario.getEmail());
-                } else {
-                    Log.d("Usuario", "Usuário não encontrado");
-                }
-            }
-        });
 
         return rootView;
     }

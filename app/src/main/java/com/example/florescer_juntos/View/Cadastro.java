@@ -41,6 +41,48 @@ public class Cadastro extends AppCompatActivity {
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
         // Método que verifica alterações no campo
+        txtSenha.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String senha = s.toString().trim();
+                if (senha.length()<8) {
+                    txtSenha.setError("Digite pelo menos 8 digitos!");
+                }
+            }
+        });
+        txtSenhaCon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String senhaCon = s.toString().trim();
+                if (senhaCon.length()<8) {
+                    txtSenhaCon.setError("Digite pelo menos 8 digitos!");
+                }
+                if (!txtSenhaCon.getText().toString().equals(txtSenha.getText().toString())) {
+                    txtSenhaCon.setError("Senhas diferentes!");
+                }
+            }
+        });
+        txtNome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String nome = s.toString().trim();
+                if (nome.equals("")) {
+                    txtNome.setError("Preencha este campo!");
+                }
+            }
+        });
         txtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -48,18 +90,14 @@ public class Cadastro extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                // Verifico o email após o usuário modificar-lo
                 String email = s.toString().trim();
-                if (isEmailValid(email)) { // Vejo se é válido
+                if (isEmailValid(email)) {
                     UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
                     usuarioDAO.isSaved(email, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() {
                         @Override
                         public void onResult(boolean exists) {
-                            // Se houver conta
                             if (exists) { // Caso já exista uma conta com essa senha...
                                 txtEmail.setError("Email já em uso!");
-                            } else {
-                                // Email válido...
                             }
                         }
                     });
@@ -106,6 +144,15 @@ public class Cadastro extends AppCompatActivity {
                                 txtEmail.setError("Email já em uso!");
                                 txtEmail.setText("");
                                 Toast.makeText(Cadastro.this, "Email já em uso", Toast.LENGTH_SHORT).show();
+                            } else if (pass.length()<8) {
+                                txtSenha.setError("Digite pelo menos 8 digitos!");
+                                txtSenha.setText("");
+                                txtSenhaCon.setText("");
+                                Toast.makeText(Cadastro.this, "Senha inválida!", Toast.LENGTH_LONG).show();
+                            } else if (!isEmailValid(mail)){
+                                txtEmail.setError("Email inválido!");
+                                txtEmail.setText("");
+                                Toast.makeText(Cadastro.this, "Email inválido!", Toast.LENGTH_LONG).show();
                             } else {
                                 // Se não houver
                                 if(!pass.equals(passCon)){

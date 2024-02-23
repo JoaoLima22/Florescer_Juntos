@@ -118,7 +118,6 @@ public class UsuarioDAO {
                     snapshot.getRef().removeValue();
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Erro

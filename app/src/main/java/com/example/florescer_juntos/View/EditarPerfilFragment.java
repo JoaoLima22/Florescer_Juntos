@@ -13,15 +13,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +32,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -49,7 +48,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -75,7 +73,6 @@ public class EditarPerfilFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private boolean pressImageButtom = false;
 
     public EditarPerfilFragment() {
         // Required empty public constructor
@@ -126,14 +123,81 @@ public class EditarPerfilFragment extends Fragment {
         tvSenhaCon = rootView.findViewById(R.id.tvSenhaCon);
         btnConfirmar = rootView.findViewById(R.id.btnEditarPerfil);
         btnCancelar = rootView.findViewById(R.id.btnCancelarPerfil);
-
         SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
-        UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
-        String emailUsuario = "";
-        String reference = "";
-        String url = "";
+
+        // Valido esses campos
+        edtSenha.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String senha = s.toString().trim();
+                if (senha.length()<8) { // Vejo se possui 8 digitos
+                    edtSenha.setError("Digite pelo menos 8 digitos!");
+                }
+            }
+        });
+        edtSenhaCon.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String senhaCon = s.toString().trim();
+                if (senhaCon.length()<8) { // Vejo se possui 8 digitos
+                    edtSenhaCon.setError("Digite pelo menos 8 digitos!");
+                }
+                if (!edtSenhaCon.getText().toString().equals(edtSenha.getText().toString())) { // Vejo se são iguais
+                    edtSenhaCon.setError("Senhas diferentes!");
+                }
+            }
+        });
+        edtNome.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Verifico o email após o usuário modificar-lo
+                String nome = s.toString().trim();
+                if (nome.equals("")) { // Vejo se é válido
+                    edtNome.setError("Preencha este campo!");
+                }
+            }
+        });
+        edtEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Verifico o email após o usuário modificar-lo
+                String email = s.toString().trim();
+                if (isEmailValid(email)) { // Vejo se é válido
+                    UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+                    usuarioDAO.isSaved(email, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() {
+                        @Override
+                        public void onResult(boolean exists) {
+                            // Se houver conta
+                            if (exists && !(email.equals(sp.getString("userLog", "")))) { // Caso já exista uma conta com essa senha...
+                                edtEmail.setError("Email já em uso!");
+                            }
+                        }
+                    });
+                } else {
+                    // Se o email for inválido...
+                    edtEmail.setError("Email inválido!");
+                }
+            }
+        });
 
         // Verifico qual o tipo de usuario logado
+        UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
         FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
         if (user_Google != null) {
             // Se for do google, removo os campos e mostro seus dados
@@ -142,12 +206,9 @@ public class EditarPerfilFragment extends Fragment {
                 @Override
                 public void onUsuarioCarregado(Usuario usuario) {
                     if (usuario != null) {
-                        if (isAdded()) {
-                            Context context = requireContext();
-                            edtNome.setText(usuario.getNome());
-                            edtTelefone.setText(usuario.getTelefone());
-                            edtDesc.setText(usuario.getDescricao());
-                        }
+                        edtNome.setText(usuario.getNome());
+                        edtTelefone.setText(usuario.getTelefone());
+                        edtDesc.setText(usuario.getDescricao());
                     } else {
                         Log.d("Usuario", "Usuário não encontrado");
                     }
@@ -159,16 +220,12 @@ public class EditarPerfilFragment extends Fragment {
                 @Override
                 public void onUsuarioCarregado(Usuario usuario) {
                     if (usuario != null) {
-                        if (isAdded()) {
-                            Context context = requireContext();
-                            edtNome.setText(usuario.getNome());
-                            edtTelefone.setText(usuario.getTelefone());
-                            edtDesc.setText(usuario.getDescricao());
-                            edtEmail.setText(usuario.getEmail());
-                            edtSenha.setText(usuario.getSenha());
-                            edtSenhaCon.setText(usuario.getSenha());
-
-                        }
+                        edtNome.setText(usuario.getNome());
+                        edtTelefone.setText(usuario.getTelefone());
+                        edtDesc.setText(usuario.getDescricao());
+                        edtEmail.setText(usuario.getEmail());
+                        edtSenha.setText(usuario.getSenha());
+                        edtSenhaCon.setText(usuario.getSenha());
                     } else {
                         Log.d("Usuario", "Usuário não encontrado");
                     }
@@ -182,18 +239,69 @@ public class EditarPerfilFragment extends Fragment {
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateUser();
+                String nome, mail, pass, passCon, desc, telefone;
+                nome = edtNome.getText().toString();
+                desc = edtDesc.getText().toString();
+                telefone = edtTelefone.getText().toString();
+
+                if (user_Google != null) { // email do google
+                    if(nome.equals("")){edtNome.setError("Preencha este campo!");
+                    } else {updateUser();}
+                } else {
+                    mail = edtEmail.getText().toString();
+                    pass = edtSenha.getText().toString();
+                    passCon = edtSenhaCon.getText().toString();
+
+                    // Verifico se já existe alguma conta com aquele email
+                    UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+                    usuarioDAO.isSaved(mail, FirebaseDatabase.getInstance().getReference("usuarios"), new UsuarioDAO.ExistenceCheckCallback() {
+                        @Override
+                        public void onResult(boolean exists) {
+                            // Se houver conta
+                            if (exists && !(mail.equals(sp.getString("userLog", "")))) {
+                                edtEmail.setError("Email já em uso!");
+                                edtEmail.setText("");
+                                Toast.makeText(requireContext(), "Email já em uso", Toast.LENGTH_LONG).show();
+                            } else {
+                                // Se não houver
+                                if(nome.equals("")){
+                                    edtNome.setError("Preencha este campo!");
+                                    Toast.makeText(requireContext(), "Digite seu nome!", Toast.LENGTH_LONG).show();
+                                } else if (!isEmailValid(mail)) {
+                                    edtEmail.setError("Email inválido!");
+                                    edtEmail.setText("");
+                                    Toast.makeText(requireContext(), "Email inválido!", Toast.LENGTH_LONG).show();
+                                } else if (pass.length()<8) {
+                                    edtSenha.setError("Digite pelo menos 8 digitos!");
+                                    edtSenha.setText("");
+                                    edtSenhaCon.setText("");
+                                    Toast.makeText(requireContext(), "Senha inválida!", Toast.LENGTH_LONG).show();
+                                } else if(!pass.equals(passCon)){
+                                    // Testo senhas diferentes
+                                    edtSenha.setError("Senhas diferentes!");
+                                    edtSenhaCon.setError("Senhas diferentes!");
+                                    edtSenha.setText("");
+                                    edtSenhaCon.setText("");
+                                    Toast.makeText(requireContext(), "Senhas diferentes!", Toast.LENGTH_LONG).show();
+                                } else {
+                                    updateUser();
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
-
-
         return rootView;
     }
 
+    // Funcção que verifica o email
+    private boolean isEmailValid(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
     // Método que esconde os campos para usuários do google
     private void removerCampos(View rootView){
-
         // Ajusto os elementos que ficariam bugados
         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) edtTelefone.getLayoutParams();
         layoutParams.topToBottom = R.id.edtNomeEdtPerfil;
@@ -207,25 +315,6 @@ public class EditarPerfilFragment extends Fragment {
         constraintLayout.removeView(tvSenha);
         constraintLayout.removeView(edtSenhaCon);
         constraintLayout.removeView(tvSenhaCon);
-    }
-
-    private String getFileExtension(Uri uri){
-        ContentResolver cR = requireContext().getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    private Uri getImageUri(ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        if (drawable instanceof BitmapDrawable) {
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-            String path = MediaStore.Images.Media.insertImage(requireActivity().getContentResolver(), bitmap, "Image", null);
-            return Uri.parse(path);
-        } else {
-            return null;
-        }
     }
 
     // Função que altera o fragment
@@ -289,17 +378,13 @@ public class EditarPerfilFragment extends Fragment {
                                             Log.e("Firebase", "Erro ao atualizar usuário", e);
                                         }
                                     });
-
-                            startActivity(new Intent(getActivity(), Splash.class));
-                            getActivity().finish();
+                            replaceFragment(new PerfilFragment());
                         }
                     }
                 } else {
                     Log.d("Usuario", "Usuário não encontrado");
-
                 }
             }
         });
-
     }
 }

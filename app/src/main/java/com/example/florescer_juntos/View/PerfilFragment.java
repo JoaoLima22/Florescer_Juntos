@@ -1,7 +1,6 @@
 package com.example.florescer_juntos.View;
 
 import static android.app.Activity.RESULT_OK;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,13 +11,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +25,6 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
@@ -46,7 +41,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +66,6 @@ public class PerfilFragment extends Fragment {
 
     public PerfilFragment() {
         // Required empty public constructor
-
     }
 
     /**
@@ -132,7 +125,6 @@ public class PerfilFragment extends Fragment {
             emailUsuario = user_Google.getEmail();
             reference = "users";
         } else {
-            // Busco os dados do usuário pelo email logado
             sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
             emailUsuario = sp.getString("userLog", "");
             reference = "usuarios";
@@ -185,10 +177,10 @@ public class PerfilFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // Se confirmar excluo o usuario
                         FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
-
                         UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
                         String emailUsuario = "";
                         String reference = "";
+
                         if (user_Google != null) {
                             emailUsuario = user_Google.getEmail();
                             reference = "users";
@@ -199,16 +191,16 @@ public class PerfilFragment extends Fragment {
                             reference = "usuarios";
                         }
 
-                        // Busco o usuario e mostro seus dados
+                        // Busco o usuario para apagar sua imagem
                         usuarioDAO.getUsuarioAsync(emailUsuario, FirebaseDatabase.getInstance().getReference(reference), getActivity(), new UsuarioDAO.UsuarioCallback() {
                             @Override
                             public void onUsuarioCarregado(Usuario usuario) {
                                 if (usuario != null) {
                                     if (!usuario.getImageUrl().equals(("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.perfil_image).toString())) {
                                         String url = usuario.getImageUrl();
-                                        // Obter a referência do arquivo no Firebase Storage a partir do URL
+                                        // Obtenho a referência do arquivo no Firebase Storage a partir do URL
                                         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-                                        // Excluir o arquivo
+                                        // Excluo o arquivo
                                         storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -228,6 +220,8 @@ public class PerfilFragment extends Fragment {
                                 }
                             }
                         });
+
+                        // Apago o usuario e dou logout
                         if (user_Google != null) {
                             usuarioDAO.deleteUsuarioByEmail(user_Google.getEmail(), FirebaseDatabase.getInstance().getReference("users"));
                         } else {
@@ -244,7 +238,6 @@ public class PerfilFragment extends Fragment {
                 builder.show();
             }
         });
-
         return rootView;
     }
 
@@ -262,8 +255,8 @@ public class PerfilFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 111 && resultCode == RESULT_OK
-                && data != null && data.getData() != null){
+        if(requestCode == 111 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            // Pego a imagem selecionada e acoino um progressdialog
             Uri imageUri = data.getData();
             ProgressDialog progressDialog = new ProgressDialog(getActivity(), R.style.CustomProgressDialog);
             progressDialog.setMessage("Alterando imagem...");
@@ -278,6 +271,7 @@ public class PerfilFragment extends Fragment {
                 }
             }, 4000);
 
+            // Salvo a imagem no banco
             StorageReference storageReference = FirebaseStorage.getInstance().getReference("usuarios");
             StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(imageUri));
             fileReference.putFile(imageUri)
@@ -292,7 +286,7 @@ public class PerfilFragment extends Fragment {
                                     String emailUsuario = "";
                                     String reference = "";
 
-                                    // Verifico qual tipo de usuario
+                                    // Verifico qual tipo de usuario e salvo a imagem nele
                                     FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
                                     if (user_Google != null) {
                                         emailUsuario = user_Google.getEmail();
@@ -309,7 +303,6 @@ public class PerfilFragment extends Fragment {
                                             if (usuario != null) {
                                                 Map<String, Object> update = new HashMap<>();
                                                 update.put("photo", downloadUrl.toString());
-
                                                 DatabaseReference databaseReference;
                                                 if (user_Google != null) {
                                                     databaseReference = FirebaseDatabase.getInstance().getReference("users");
@@ -318,11 +311,13 @@ public class PerfilFragment extends Fragment {
                                                     databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
                                                     databaseReference.child(usuario.getId()).updateChildren(update);
                                                 }
+
+                                                // Deleto a imagem
                                                 if (!usuario.getImageUrl().equals(("android.resource://" + getActivity().getPackageName() + "/" + R.drawable.perfil_image).toString())) {
                                                     String url = usuario.getImageUrl();
-                                                    // Obter a referência do arquivo no Firebase Storage a partir do URL
+                                                    // Obtenho a referência do arquivo no Firebase Storage a partir do URL
                                                     StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-                                                    // Excluir o arquivo
+                                                    // Excluo o arquivo
                                                     storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void aVoid) {
@@ -337,9 +332,6 @@ public class PerfilFragment extends Fragment {
                                                         }
                                                     });
                                                 }
-
-
-
                                             } else {
                                                 Log.d("Usuario", "Usuário não encontrado");
                                             }
@@ -348,16 +340,9 @@ public class PerfilFragment extends Fragment {
                                 }
                             });
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            // Toast.makeText(Cadastro2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
                     });
         }
     }
-
 
     // Função que da logout no usuario
     public void logout(){

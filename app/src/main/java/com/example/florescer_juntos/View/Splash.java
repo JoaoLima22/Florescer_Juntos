@@ -46,8 +46,6 @@ public class Splash extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null){
             aux[0] = 1;
-            //startActivity(new Intent(Splash.this, MainActivity.class));
-            //finish();
         } else {
             SharedPreferences sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
             String email = sp.getString("userLog", "");
@@ -59,13 +57,6 @@ public class Splash extends AppCompatActivity {
                     // Se houver
                     if (exists) {
                         aux[0] = 2;
-                        //startActivity(new Intent(Splash.this, MainActivity.class));
-                        //finish();
-                    } else {
-                        aux[0] = 3;
-                        // Se não houver
-                        //startActivity(new Intent(Splash.this, Login.class));
-                        //finish();
                     }
                 }
             });
