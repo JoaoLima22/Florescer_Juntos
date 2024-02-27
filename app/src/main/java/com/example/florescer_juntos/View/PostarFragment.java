@@ -284,4 +284,9 @@ public class PostarFragment extends Fragment {
         matrix.postRotate(degrees);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
+
+
+    private void toast(String mensage){
+        Toast.makeText(requireContext(), mensage, Toast.LENGTH_SHORT).show();
+    }
 }
