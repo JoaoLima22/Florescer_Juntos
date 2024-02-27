@@ -1,30 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/btnLog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFDF64"
+    android:layout_gravity="center"
+    android:background="@color/green"
     tools:context=".View.PostarFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tvNome"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Postar?"
-            android:textSize="20dp"
-            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/white_background"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/ttlPost"
+                    style="@style/titleStyle"
+                    android:layout_marginTop="15dp"
+                    android:text="Criando um post"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/tvType"
+                    app:layout_constraintTop_toBottomOf="@+id/ttlPost">
+
+                    <RadioButton
+                        android:id="@+id/radioButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="Suculenta"
+                        android:textColor="@color/black" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:text="Flor" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:text="Hortaliça" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:textColor="@color/black"
+                        android:text="Outro" />
+
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/tvType"
+                    style="@style/edts"
+                    android:layout_marginBottom="120dp"
+                    android:gravity="start"
+                    android:text="Selecione o tipo:"
+                    app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <EditText
+                    android:id="@+id/edtDescPost"
+                    style="@style/edts"
+                    android:layout_marginTop="20dp"
+                    android:hint="Digite sua descrição"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+                <TextView
+                    android:id="@+id/tvDesc"
+                    style="@style/edts"
+                    android:layout_marginBottom="33dp"
+                    android:gravity="start"
+                    android:text="Descrição:"
+                    app:layout_constraintBottom_toBottomOf="@+id/edtDescPost"
+                    app:layout_constraintStart_toStartOf="@+id/edtDescPost" />
+
+                <ImageView
+                    android:id="@+id/imagemPostar"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edtDescPost"
+                    tools:srcCompat="@drawable/perfil_image" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
+
+                <Button
+                    android:id="@+id/btnPhoto"
+                    style="@style/btn"
+                    android:layout_width="50dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/blue"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/baseline_photo_camera_24"
+                    app:iconGravity="textTop"
+                    app:iconSize="25dp"
+                    android:text="Tirar foto"
+                    app:layout_constraintStart_toEndOf="@+id/btnImagemPost"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnImagemPost"
+                    style="@style/btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Escolher Imagem"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btnConfirmarPost"
+                style="@style/btn"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/blue"
+                android:text="Salvar post"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+    </FrameLayout>
+
+</ScrollView>

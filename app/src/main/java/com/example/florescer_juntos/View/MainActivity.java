@@ -41,4 +41,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
+    // Função que altera o item selecionado
+    public void changeSelectedItem(int itemId) {
+        binding.barraInferior.setSelectedItemId(itemId);
+    }
 }

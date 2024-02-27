@@ -256,7 +256,7 @@ public class PerfilFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 111 && resultCode == RESULT_OK && data != null && data.getData() != null){
-            // Pego a imagem selecionada e acoino um progressdialog
+            // Pego a imagem selecionada e ativo um progressdialog
             Uri imageUri = data.getData();
             ProgressDialog progressDialog = new ProgressDialog(getActivity(), R.style.CustomProgressDialog);
             progressDialog.setMessage("Alterando imagem...");
