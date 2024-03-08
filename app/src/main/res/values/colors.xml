@@ -5,4 +5,7 @@
     <color name="green">#EFFFD4</color>
     <color name="blue">#2D95D5</color>
     <color name="darkBlue">#056098</color>
+
+    <!--    -->
+    <color name="verdeCiano">#3D9776</color>
 </resources>

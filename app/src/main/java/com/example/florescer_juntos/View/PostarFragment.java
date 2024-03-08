@@ -42,6 +42,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -53,7 +54,7 @@ import java.util.Locale;
  */
 public class PostarFragment extends Fragment {
     ImageView imageView;
-    Button btnPhoto, btnConfirmar, btnImagem;
+    Button btnPhoto, btnConfirmar, btnImagem, btnRotateImg;
     TextView edtDesc;
     RadioGroup radioGroup;
     RadioButton radioButton;
@@ -90,6 +91,7 @@ public class PostarFragment extends Fragment {
      * @return A new instance of fragment PostarFragment.
      */
     // TODO: Rename and change types and number of parameters
+
     public static PostarFragment newInstance(String param1, String param2) {
         PostarFragment fragment = new PostarFragment();
         Bundle args = new Bundle();
@@ -108,20 +110,33 @@ public class PostarFragment extends Fragment {
         }
     }
 
-
-
     @SuppressLint("MissingInflatedId")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_postar, container, false);
 
         radioGroup = rootView.findViewById(R.id.radioGroup);
         edtDesc = rootView.findViewById(R.id.edtDescPost);
         imageView = rootView.findViewById(R.id.imagemPostar);
         btnImagem = rootView.findViewById(R.id.btnImagemPost);
-        btnConfirmar = rootView.findViewById(R.id.btnConfirmarPost);
+        btnConfirmar = rootView.findViewById(R.id.btnConfirmarPost2);
         btnPhoto = rootView.findViewById(R.id.btnPhoto);
+        btnRotateImg = rootView.findViewById(R.id.btnRotateImg);
+
+        btnRotateImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageUri != null) {
+                    Bitmap bitmap = getBitmapFromUri(imageUri);
+                    if (bitmap != null) {
+                        // Girar a imagem em 90 graus
+                        Bitmap rotatedBitmap = rotateBitmap(bitmap, 90);
+                        imageUri = getImageUri(requireContext(), rotatedBitmap);
+                        imageView.setImageURI(imageUri);
+                    }
+                }
+            }
+        });
 
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,10 +145,12 @@ public class PostarFragment extends Fragment {
                 startActivityForResult(camera_intent, pic_id);
             }
         });
+
         btnImagem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {escolherImagem();}
         });
+
         btnConfirmar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,11 +162,11 @@ public class PostarFragment extends Fragment {
                     Toast.makeText(requireContext(), "Selecione uma imagem!", Toast.LENGTH_SHORT).show();
                 } else {
                     radioButton = rootView.findViewById(selectedId);
+                    // Mover a lógica de salvar o post para dentro deste bloco
                     salvarPost();
                 }
             }
         });
-
         return rootView;
     }
 
@@ -237,6 +254,7 @@ public class PostarFragment extends Fragment {
             }
         });
     }
+
     // Função que altera o fragment
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
@@ -244,12 +262,14 @@ public class PostarFragment extends Fragment {
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }
+
     private void escolherImagem() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 112);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -257,20 +277,20 @@ public class PostarFragment extends Fragment {
             // Para imagem selecionada
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
-
         } else if (requestCode == pic_id) { // Para a imagem da camera
             Bitmap photo = (Bitmap) data.getExtras().get("data");
-
             imageUri = getImageUri(getActivity(), rotateBitmap(photo, 90));
             imageView.setImageURI(imageUri);
         }
     }
+
     // Função que retorna a extensão do arquivo, pra salvar a url
     private String getFileExtension(Uri uri){
         ContentResolver cR = requireContext().getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
     // Função para converter o Bitmap em Uri
     private Uri getImageUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -278,6 +298,7 @@ public class PostarFragment extends Fragment {
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Imagem_Camera", null);
         return Uri.parse(path);
     }
+
     // Função para girar o Bitmap
     private Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
         Matrix matrix = new Matrix();
@@ -285,8 +306,14 @@ public class PostarFragment extends Fragment {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-
-    private void toast(String mensage){
-        Toast.makeText(requireContext(), mensage, Toast.LENGTH_SHORT).show();
+    // Obter um Bitmap a partir de uma Uri
+    private Bitmap getBitmapFromUri(Uri uri) {
+        try {
+            return MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
 }
