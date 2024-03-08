@@ -68,7 +68,8 @@ public class PostarFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;private MainActivity mainActivity;
+    private String mParam2;
+    private MainActivity mainActivity;
 
     @Override
     public void onAttach(@NonNull Context context) {

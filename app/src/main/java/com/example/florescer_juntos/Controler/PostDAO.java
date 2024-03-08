@@ -1,13 +1,28 @@
 package com.example.florescer_juntos.Controler;
 
+import android.app.Activity;
+import android.net.Uri;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.florescer_juntos.Model.Post;
+import com.example.florescer_juntos.Model.Usuario;
+import com.example.florescer_juntos.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class PostDAO {
     private Post post;
+
 
     public PostDAO() {
         //Construtor vazio
@@ -30,8 +45,6 @@ public class PostDAO {
             databaseReference.child(databaseReference.push().getKey()).setValue(map);
             return true;
     }
-
-
 
 
 
