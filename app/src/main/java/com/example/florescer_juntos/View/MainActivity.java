@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Verifico qual item ta selecionado e direciono para os devidos fragments
         binding.barraInferior.setOnItemSelectedListener(item -> {
-            if (item.getItemId()== R.id.btnAdd){
+            if (item.getItemId()==R.id.btnAdd){
                 replaceFragment(new PostarFragment());
             } else if (item.getItemId()==R.id.btnHome){
                 replaceFragment(new HomeFragment());

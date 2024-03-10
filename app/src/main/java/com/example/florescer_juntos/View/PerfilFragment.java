@@ -16,6 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,24 +27,36 @@ import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
+import com.example.florescer_juntos.ImageAdapter;
+import com.example.florescer_juntos.Model.Post;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,11 +64,16 @@ import java.util.Map;
  * Use the {@link PerfilFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PerfilFragment extends Fragment {
+public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClickListener {
     TextView tvNome, tvEmail, tvTelefone, tvDescricao, tvImagem;
     ImageView imageView;
     Button btnLogout, btnEditarPerfil, btnDelete;
     SharedPreferences sp;
+    private RecyclerView mRecyclerView;
+    private ImageAdapter mAdapter;
+    private DatabaseReference databaseReference;
+    private List<Post> mPosts;
+    private ProgressBar mProgressCircle;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -115,6 +135,13 @@ public class PerfilFragment extends Fragment {
         btnDelete = rootView.findViewById(R.id.btnDelete);
         sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
+        mProgressCircle = rootView.findViewById(R.id.progress_circle_perfil);
+        mRecyclerView = rootView.findViewById(R.id.postsViewPerfil);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mPosts = new ArrayList<>();
+        mAdapter = new ImageAdapter(requireContext(), mPosts, "");
+
         UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
         String emailUsuario = "";
         String reference = "";
@@ -144,6 +171,47 @@ public class PerfilFragment extends Fragment {
                         tvEmail.setText(usuario.getEmail());
                         tvTelefone.setText(usuario.getTelefone());
                         tvDescricao.setText(usuario.getDescricao());
+
+                        mAdapter = new ImageAdapter(requireContext(), mPosts, usuario.getId());
+                        mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.setOnItemClickListener(PerfilFragment.this);
+                        databaseReference = FirebaseDatabase.getInstance().getReference("posts");
+                        databaseReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @SuppressLint("NotifyDataSetChanged")
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DataSnapshot snapshot = task.getResult();
+                                    mPosts.clear(); // Limpar a lista atual de posts
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        Post post = new Post();
+                                        post.setId(dataSnapshot.getKey());
+                                        post.setDescricao(dataSnapshot.child("desc").getValue(String.class));
+                                        post.setDataHora(dataSnapshot.child("dateTime").getValue(String.class));
+                                        post.setImageUrl(dataSnapshot.child("image").getValue(String.class));
+                                        post.setTipoPlanta(dataSnapshot.child("type").getValue(String.class));
+                                        post.setTipoUsuario(dataSnapshot.child("typeUser").getValue(String.class));
+                                        post.setIdUsuario(dataSnapshot.child("userId").getValue(String.class));
+
+                                        if (post.getIdUsuario().equals(usuario.getId())){
+                                            mPosts.add(post);
+                                        }
+                                    }
+
+                                    // Atualizar a RecyclerView
+                                    Collections.reverse(mPosts);
+                                    mAdapter.notifyDataSetChanged();
+                                    mProgressCircle.setVisibility(View.INVISIBLE);
+
+                                } else {
+                                    // Tratar erro
+                                    mProgressCircle.setVisibility(View.VISIBLE);
+                                    mPosts.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        });
+
                     }
                 } else {
                     Log.d("Usuario", "Usuário não encontrado");
@@ -372,5 +440,32 @@ public class PerfilFragment extends Fragment {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onSaveClick(int position) {
+
+    }
+
+    @Override
+    public void onDeleteClick(int position) {
+        Post selectedItem = mPosts.get(position);
+        final String selectedKey = selectedItem.getId();
+
+        StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageUrl());
+        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("FirebaseStorage", "Arquivo excluído com sucesso");
+                databaseReference.child(selectedKey).removeValue();
+                Toast.makeText(requireContext(), "Post deletado", Toast.LENGTH_SHORT).show();
+                replaceFragment(new HomeFragment());
+            }
+        });
     }
 }
