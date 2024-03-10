@@ -19,7 +19,7 @@
         android:theme="@style/Theme.Florescer_Juntos"
         tools:targetApi="31">
         <activity
-            android:name=".View.Splash"
+            android:name=".View.SplashActivity"
             android:exported="true">
 
             <intent-filter>
@@ -29,13 +29,10 @@
 
         </activity>
         <activity
-            android:name=".View.Cadastro2"
+            android:name=".View.CadastroActivity"
             android:exported="false" />
         <activity
-            android:name=".View.Cadastro"
-            android:exported="false" />
-        <activity
-            android:name=".View.Login"
+            android:name=".View.LoginActivity"
             android:exported="false">
         </activity>
         <activity

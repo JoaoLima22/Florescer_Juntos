@@ -17,7 +17,7 @@ import com.example.florescer_juntos.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class Splash extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
     ImageView imgGif;
     //private static final int splashTime = 10000; // 10000 milliseconds = 10 segundos
     private static final int splashTime = 1000; // Só durante o desenvolvimento
@@ -72,10 +72,10 @@ public class Splash extends AppCompatActivity {
                 // Quando tiver acabado o tempo direciono pro objetivo
                 progressBar.setProgress(splashTime);
                 if (aux[0]==1 || aux[0]==2 ){
-                    startActivity(new Intent(Splash.this, MainActivity.class));
+                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 } else {
-                    startActivity(new Intent(Splash.this, Login.class));
+                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
                 }
             }

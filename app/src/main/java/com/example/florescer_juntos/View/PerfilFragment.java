@@ -430,7 +430,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
             mGoogleSignInClient.signOut();
         }
 
-        startActivity(new Intent(getActivity(), Splash.class));
+        startActivity(new Intent(getActivity(), SplashActivity.class));
         getActivity().finish();
     }
 
@@ -464,7 +464,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                 Log.d("FirebaseStorage", "Arquivo excluído com sucesso");
                 databaseReference.child(selectedKey).removeValue();
                 Toast.makeText(requireContext(), "Post deletado", Toast.LENGTH_SHORT).show();
-                replaceFragment(new HomeFragment());
+                replaceFragment(new PerfilFragment());
             }
         });
     }

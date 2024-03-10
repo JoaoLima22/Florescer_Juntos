@@ -37,7 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     TextView tvSign;
     EditText edtEmail, edtSenha;
@@ -111,7 +111,7 @@ public class Login extends AppCompatActivity {
         tvSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(Login.this, Cadastro.class);
+                Intent it = new Intent(LoginActivity.this, CadastroActivity.class);
                 startActivity(it);
                 finish();
             }
@@ -132,15 +132,15 @@ public class Login extends AppCompatActivity {
                 }
                 if (mail.equals("") || pass.equals("")) {
                     // Testo campos vazios
-                    Toast.makeText(Login.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
                 } else if (pass.length()<8) {
                     edtSenha.setError("Digite pelo menos 8 digitos!");
                     edtSenha.setText("");
-                    Toast.makeText(Login.this, "Senha inválida!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Senha inválida!", Toast.LENGTH_LONG).show();
                 } else if (!isEmailValid(mail)){
                     edtEmail.setError("Email inválido!");
                     edtEmail.setText("");
-                    Toast.makeText(Login.this, "Email inválido!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Email inválido!", Toast.LENGTH_LONG).show();
                 } else {
                     // Verifico se existe uma conta com esse email
                     UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
@@ -153,7 +153,7 @@ public class Login extends AppCompatActivity {
                                 edtEmail.setError("Email inválido!");
                             } else {
                                 // Se existir busco o usuário
-                                usuarioDAO.getUsuarioAsync(mail, FirebaseDatabase.getInstance().getReference("usuarios"), Login.this, new UsuarioDAO.UsuarioCallback() {
+                                usuarioDAO.getUsuarioAsync(mail, FirebaseDatabase.getInstance().getReference("usuarios"), LoginActivity.this, new UsuarioDAO.UsuarioCallback() {
                                     @Override
                                     public void onUsuarioCarregado(Usuario usuario) {
                                         if (usuario != null) {
@@ -163,13 +163,13 @@ public class Login extends AppCompatActivity {
                                                 edtSenha.setText("");
                                             } else {
                                                 // Se for
-                                                Toast.makeText(Login.this, "Logando...", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginActivity.this, "Logando...", Toast.LENGTH_SHORT).show();
                                                 SharedPreferences.Editor editor = sp.edit();
                                                 editor.clear();
                                                 editor.putString("userLog", mail);
                                                 editor.commit();
 
-                                                startActivity(new Intent(Login.this, MainActivity.class));
+                                                startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                                 finish();
                                             }
                                         } else {
@@ -198,7 +198,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(Login.this, "Logando...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LoginActivity.this, "Logando...", Toast.LENGTH_SHORT).show();
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -225,10 +225,10 @@ public class Login extends AppCompatActivity {
                             map.put("mail", auth.getCurrentUser().getEmail());
                             database.getReference().child("users").child(user.getUid()).updateChildren(map);
 
-                            startActivity(new Intent(Login.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
-                            Toast.makeText(Login.this, "Algo errado durante a autenticação!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Algo errado durante a autenticação!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

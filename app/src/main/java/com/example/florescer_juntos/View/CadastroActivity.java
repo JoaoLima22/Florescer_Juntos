@@ -29,11 +29,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class Cadastro extends AppCompatActivity {
+public class CadastroActivity extends AppCompatActivity {
     private TextView redirectLogin;
     private Button btnCadastro, btnImagem;
     private EditText txtEmail, txtNome, txtSenha, txtSenhaCon, txtTelefone, txtDescricao;
@@ -68,6 +69,7 @@ public class Cadastro extends AppCompatActivity {
         imageView = findViewById(R.id.imagemCadastro);
         progressBar = findViewById(R.id.progressBar);
         databaseReference = FirebaseDatabase.getInstance().getReference("usuarios");
+
         sp = getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
         // Busco a imagem padrão
@@ -87,9 +89,9 @@ public class Cadastro extends AppCompatActivity {
             public void onClick(View v) {
                 Usuario user = new Usuario();
                 user.setNome(String.valueOf(txtNome.getText()));
-                user.setDescricao(String.valueOf(txtEmail.getText()));
+                user.setEmail(String.valueOf(txtEmail.getText()));
                 user.setTelefone(String.valueOf(txtSenha.getText()));
-                user.setDescricao(String.valueOf(txtSenhaCon.getText()));
+                user.setSenha(String.valueOf(txtSenhaCon.getText()));
                 user.setTelefone(String.valueOf(txtTelefone.getText()));
                 user.setDescricao(String.valueOf(txtDescricao.getText()));
                 //img
@@ -168,7 +170,7 @@ public class Cadastro extends AppCompatActivity {
         redirectLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent it = new Intent(Cadastro.this, Login.class);
+                Intent it = new Intent(CadastroActivity.this, LoginActivity.class);
                 startActivity(it);
                 finish();
             }
@@ -222,7 +224,7 @@ public class Cadastro extends AppCompatActivity {
         }
 
         if (name.equals("") || mail.equals("") || pass.equals("") || passCon.equals("")) {
-            Toast.makeText(Cadastro.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CadastroActivity.this, "Preencha todos os campos!", Toast.LENGTH_SHORT).show();
         } else {
             // Verifico se já existe alguma conta com aquele email
             UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
@@ -233,16 +235,16 @@ public class Cadastro extends AppCompatActivity {
                     if (exists) {
                         txtEmail.setError("Email já em uso!");
                         txtEmail.setText("");
-                        Toast.makeText(Cadastro.this, "Email já em uso", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CadastroActivity.this, "Email já em uso", Toast.LENGTH_SHORT).show();
                     } else if (pass.length() < 8) {
                         txtSenha.setError("Digite pelo menos 8 dígitos!");
                         txtSenha.setText("");
                         txtSenhaCon.setText("");
-                        Toast.makeText(Cadastro.this, "Senha inválida!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CadastroActivity.this, "Senha inválida!", Toast.LENGTH_LONG).show();
                     } else if (!isEmailValid(mail)) {
                         txtEmail.setError("Email inválido!");
                         txtEmail.setText("");
-                        Toast.makeText(Cadastro.this, "Email inválido!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CadastroActivity.this, "Email inválido!", Toast.LENGTH_LONG).show();
                     } else {
                         // Se não houver
                         if (!pass.equals(passCon)) {
@@ -251,12 +253,14 @@ public class Cadastro extends AppCompatActivity {
                             txtSenhaCon.setError("Senhas diferentes!");
                             txtSenha.setText("");
                             txtSenhaCon.setText("");
-                            Toast.makeText(Cadastro.this, "Senhas diferentes!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CadastroActivity.this, "Senhas diferentes!", Toast.LENGTH_SHORT).show();
                         } else {
                             if (imageUri != null) { // Se houver imagem, eu salvo ela no cloud
                                 btnCadastro.setEnabled(false);
                                 btnImagem.setEnabled(false); // Para não clicarem mais de uma vez no botão
-                                Toast.makeText(Cadastro.this, "Cadastrando...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CadastroActivity.this, "Cadastrando...", Toast.LENGTH_SHORT).show();
+
+                                storageReference = FirebaseStorage.getInstance().getReference();
                                 StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(imageUri));
                                 fileReference.putFile(imageUri)
                                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -278,7 +282,7 @@ public class Cadastro extends AppCompatActivity {
                                                         editor.putString("userLog", user.getEmail());
                                                         editor.commit();
 
-                                                        startActivity(new Intent(Cadastro.this, MainActivity.class));
+                                                        startActivity(new Intent(CadastroActivity.this, MainActivity.class));
                                                         btnCadastro.setEnabled(true);
                                                         btnImagem.setEnabled(true);
                                                         finish();
@@ -301,7 +305,7 @@ public class Cadastro extends AppCompatActivity {
                                             }
                                         });
                             } else {
-                                Toast.makeText(Cadastro.this, "Selecione uma imagem de perfil!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CadastroActivity.this, "Selecione uma imagem de perfil!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
