@@ -224,6 +224,7 @@ public class PostarFragment extends Fragment {
                 if (usuario != null) {
                     // Salvar o id do usuário e tentar salvar a imagem
                     post.setIdUsuario(usuario.getId());
+                    post.setEmailUsuario(usuario.getEmail());
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts");
                     StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
 
@@ -245,7 +246,7 @@ public class PostarFragment extends Fragment {
                                     public void onSuccess(Uri downloadUrl) {
                                         // Salvar a URL no post e salvá-lo
                                         post.setImageUrl(downloadUrl.toString());
-                                        PostDAO postDAO = new PostDAO(post);
+                                        PostDAO postDAO = new PostDAO(post, requireContext());
                                         if (postDAO.save()) {
                                             Toast.makeText(requireContext(), "Salvo com sucesso", Toast.LENGTH_SHORT).show();
                                             replaceFragment(new PerfilFragment());

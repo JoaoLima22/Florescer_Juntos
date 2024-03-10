@@ -1,5 +1,7 @@
 package com.example.florescer_juntos.View;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
+import com.example.florescer_juntos.NetworkUtils;
 import com.example.florescer_juntos.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,6 +35,8 @@ public class SplashActivity extends AppCompatActivity {
         imgGif = findViewById(R.id.imgGif);
         progressBar = findViewById(R.id.progressBarSplash);
         progressBar.setMax(splashTime);
+
+
 
         // Defino o gif
         RequestOptions requestOptions = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE);
@@ -71,11 +76,19 @@ public class SplashActivity extends AppCompatActivity {
             public void onFinish() {
                 // Quando tiver acabado o tempo direciono pro objetivo
                 progressBar.setProgress(splashTime);
-                if (aux[0]==1 || aux[0]==2 ){
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
+
+                if (NetworkUtils.isNetworkAvailable(getApplicationContext())) {
+                    // Conectado à internet
+                    if (aux[0]==1 || aux[0]==2 ){
+                        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                        finish();
+                    }
                 } else {
-                    startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                    // Sem conexão com a internet
+                    startActivity(new Intent(SplashActivity.this, VerPostsOfflineActivity.class));
                     finish();
                 }
             }

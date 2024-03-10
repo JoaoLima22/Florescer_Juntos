@@ -5,6 +5,7 @@ public class Post {
     private String descricao;
     private String imageUrl;
     private String idUsuario;
+    private String emailUsuario;
     private String tipoPlanta;
     private String tipoUsuario;
     private String dataHora;
@@ -74,5 +75,13 @@ public class Post {
 
     public void setTipoUsuario(String tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
+    }
+
+    public String getEmailUsuario() {
+        return emailUsuario;
+    }
+
+    public void setEmailUsuario(String emailUsuario) {
+        this.emailUsuario = emailUsuario;
     }
 }

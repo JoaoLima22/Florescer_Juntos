@@ -191,6 +191,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                                         post.setTipoPlanta(dataSnapshot.child("type").getValue(String.class));
                                         post.setTipoUsuario(dataSnapshot.child("typeUser").getValue(String.class));
                                         post.setIdUsuario(dataSnapshot.child("userId").getValue(String.class));
+                                        post.setEmailUsuario(dataSnapshot.child("mailUser").getValue(String.class));
 
                                         // Salvo para mostar apenas os posts do usuario
                                         if (post.getIdUsuario().equals(usuario.getId())){
@@ -477,5 +478,10 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                 replaceFragment(new PerfilFragment());
             }
         });
+    }
+
+    @Override
+    public void onDeleteOffClick(int position) {
+
     }
 }

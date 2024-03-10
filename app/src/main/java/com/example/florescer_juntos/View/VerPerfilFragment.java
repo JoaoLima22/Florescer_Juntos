@@ -188,6 +188,7 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
                                             post.setTipoPlanta(dataSnapshot.child("type").getValue(String.class));
                                             post.setTipoUsuario(dataSnapshot.child("typeUser").getValue(String.class));
                                             post.setIdUsuario(dataSnapshot.child("userId").getValue(String.class));
+                                            post.setEmailUsuario(dataSnapshot.child("mailUser").getValue(String.class));
 
                                             if (post.getIdUsuario().equals(idUser)){
                                                 mPosts.add(post);
@@ -240,6 +241,11 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
 
     @Override
     public void onDeleteClick(int position) {
+
+    }
+
+    @Override
+    public void onDeleteOffClick(int position) {
 
     }
 }
