@@ -18,7 +18,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +29,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.ImageAdapter;
@@ -52,7 +50,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -172,6 +169,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                         tvTelefone.setText(usuario.getTelefone());
                         tvDescricao.setText(usuario.getDescricao());
 
+                        //Seto o adapter com o user logado
                         mAdapter = new ImageAdapter(requireContext(), mPosts, usuario.getId());
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.setOnItemClickListener(PerfilFragment.this);
@@ -184,6 +182,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                                     DataSnapshot snapshot = task.getResult();
                                     mPosts.clear(); // Limpar a lista atual de posts
                                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        // Pego todos os posts
                                         Post post = new Post();
                                         post.setId(dataSnapshot.getKey());
                                         post.setDescricao(dataSnapshot.child("desc").getValue(String.class));
@@ -193,6 +192,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                                         post.setTipoUsuario(dataSnapshot.child("typeUser").getValue(String.class));
                                         post.setIdUsuario(dataSnapshot.child("userId").getValue(String.class));
 
+                                        // Salvo para mostar apenas os posts do usuario
                                         if (post.getIdUsuario().equals(usuario.getId())){
                                             mPosts.add(post);
                                         }
@@ -449,6 +449,16 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
 
     @Override
     public void onSaveClick(int position) {
+
+    }
+
+    @Override
+    public void onVerPerfilClick(int position) {
+
+    }
+
+    @Override
+    public void onEditarClick(int position) {
 
     }
 

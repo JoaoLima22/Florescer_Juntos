@@ -9,13 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.Model.Post;
-
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
@@ -39,6 +36,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+        // Quem mostra os dados
         Post postCurent = mPosts.get(position);
         holder.nomeView.setText(postCurent.getIdUsuario());
         Glide.with(mContext)
@@ -63,6 +61,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         public ImageViewHolder(View itemView){
             super(itemView);
 
+            // Instancio/linko os elementos
             nomeView = itemView.findViewById(R.id.tvNomeUsuario);
             descView = itemView.findViewById(R.id.tvPostDescricao);
             imageView = itemView.findViewById(R.id.ivImagePost);
@@ -85,11 +84,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Escolha uma ação");
+
             MenuItem save = menu.add(Menu.NONE, 1, 1, "Salvar post");
             save.setOnMenuItemClickListener(this);
-            // Verificar se o ID do usuário logado corresponde ao ID do usuário associado ao post
+
+            if (!mPosts.get(getAdapterPosition()).getIdUsuario().equals(mUserId)) {
+                MenuItem ver = menu.add(Menu.NONE, 2, 2, "Ver perfil");
+                ver.setOnMenuItemClickListener(this);
+            }
+
             if (mPosts.get(getAdapterPosition()).getIdUsuario().equals(mUserId)) {
-                MenuItem delete = menu.add(Menu.NONE, 2, 2, "Deletar post");
+                MenuItem editar = menu.add(Menu.NONE, 3, 3, "Editar post");
+                editar.setOnMenuItemClickListener(this);
+            }
+
+            if (mPosts.get(getAdapterPosition()).getIdUsuario().equals(mUserId)) {
+                MenuItem delete = menu.add(Menu.NONE, 4, 4, "Deletar post");
                 delete.setOnMenuItemClickListener(this);
             }
         }
@@ -103,9 +113,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                         mListener.onSaveClick(position);
                         return true;
                     } else if (item.getItemId()==2) {
+                        mListener.onVerPerfilClick(position);
+                        return true;
+                    } else if (item.getItemId()==3) {
+                        mListener.onEditarClick(position);
+                        return true;
+                    } else if (item.getItemId()==4) {
                         mListener.onDeleteClick(position);
                         return true;
                     }
+
+                    //Adicionar mais aqui
                 }
             }
             return false;
@@ -116,6 +134,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         void onItemClick(int position);
 
         void onSaveClick(int position);
+
+        void onVerPerfilClick(int position);
+
+        void onEditarClick(int position);
 
         void onDeleteClick(int position);
 

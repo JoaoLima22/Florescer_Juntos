@@ -1,19 +1,15 @@
 package com.example.florescer_juntos.View;
 
-import static com.example.florescer_juntos.R.color.green;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,10 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.ImageAdapter;
 import com.example.florescer_juntos.Model.Post;
@@ -37,14 +30,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,6 +64,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        // Busco a activity para alterar o botão do menu depois
         if (context instanceof MainActivity) {
             mainActivity = (MainActivity) context;
         }
@@ -117,6 +107,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Instancio oq preciso
         btnFiltroTipo = rootView.findViewById(R.id.btnFiltroTipo);
         mProgressCircle = rootView.findViewById(R.id.progress_circle);
         mRecyclerView = rootView.findViewById(R.id.postsView);
@@ -130,7 +121,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
         String emailUsuario = "";
         String reference = "";
 
-        // Verifico qual tipo de usuario
+        // Verifico qual tipo de usuario e pego o usuario
         FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
         if (user_Google != null) {
             emailUsuario = user_Google.getEmail();
@@ -144,6 +135,8 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
             @Override
             public void onUsuarioCarregado(Usuario usuario) {
                 if (usuario != null) {
+
+                    // Seto o adapter com o usuario logado
                     mAdapter = new ImageAdapter(requireContext(), mPosts, usuario.getId());
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.setOnItemClickListener(HomeFragment.this);
@@ -156,6 +149,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
                                 DataSnapshot snapshot = task.getResult();
                                 mPosts.clear(); // Limpar a lista atual de posts
                                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    // Busco os posts
                                     Post post = new Post();
                                     post.setId(dataSnapshot.getKey());
                                     post.setDescricao(dataSnapshot.child("desc").getValue(String.class));
@@ -167,7 +161,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
                                     mPosts.add(post);
                                 }
 
-                                // Atualizar a RecyclerView
+                                // Atualizor a RecyclerView
                                 Collections.reverse(mPosts);
                                 mAdapter.notifyDataSetChanged();
                                 mProgressCircle.setVisibility(View.INVISIBLE);
@@ -188,6 +182,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
         btnFiltroTipo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Gero o popup do filto
                 PopupMenu popupMenu = new PopupMenu(requireContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.filtro_tipos, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -284,30 +279,53 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(requireContext(), "Clicou no item de posição: " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(requireContext(), "Clicou no item de posição: " + position, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onSaveClick(int position) {
-        Toast.makeText(requireContext(), "Save no item de posição: " + position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(requireContext(), "Save no item de posição: " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onVerPerfilClick(int position) {
+        // Salvo os dados do usuario dono do post
+        Post selectedItem = mPosts.get(position);
+        SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("id_user_ver", selectedItem.getIdUsuario());
+        editor.putString("tipo_user_ver", selectedItem.getTipoUsuario());
+        editor.commit();
+
+        // Mando pro fragment desejado e altero
+        // o botão do menu por conveniencia
+        mainActivity.changeSelectedItem(R.id.btnPerfil);
+        replaceFragment(new VerPerfilFragment());
+    }
+
+    @Override
+    public void onEditarClick(int position) {
+
     }
 
     @Override
     public void onDeleteClick(int position) {
         Post selectedItem = mPosts.get(position);
         final String selectedKey = selectedItem.getId();
-
+        // Deleto a imagem no storage
         StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageUrl());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Log.d("FirebaseStorage", "Arquivo excluído com sucesso");
+                // Deleto os dados do post do database
                 databaseReference.child(selectedKey).removeValue();
                 Toast.makeText(requireContext(), "Post deletado", Toast.LENGTH_SHORT).show();
                 replaceFragment(new HomeFragment());
             }
         });
     }
+
     // Função que altera o fragment
     private void replaceFragment(Fragment fragment){
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
