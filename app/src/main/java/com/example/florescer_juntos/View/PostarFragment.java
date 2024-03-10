@@ -1,6 +1,7 @@
 package com.example.florescer_juntos.View;
 
 import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -10,11 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +23,13 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.florescer_juntos.Controler.PostDAO;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Post;
@@ -41,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -60,6 +64,9 @@ public class PostarFragment extends Fragment {
     RadioButton radioButton;
     Uri imageUri;
     private static final int pic_id = 123;
+    private boolean isImageFromCamera = false;
+    private int rotationAngle = 0;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,16 +131,23 @@ public class PostarFragment extends Fragment {
         btnPhoto = rootView.findViewById(R.id.btnPhoto);
         btnRotateImg = rootView.findViewById(R.id.btnRotateImg);
 
+// Declare uma variável para acompanhar o número de rotações
+
+
         btnRotateImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (imageUri != null) {
                     Bitmap bitmap = getBitmapFromUri(imageUri);
                     if (bitmap != null) {
-                        // Girar a imagem em 90 graus
-                        Bitmap rotatedBitmap = rotateBitmap(bitmap, 90);
-                        imageUri = getImageUri(requireContext(), rotatedBitmap);
-                        imageView.setImageURI(imageUri);
+                        // Incrementar o ângulo de rotação em 90 graus
+                        rotationAngle += 90;
+                        if (rotationAngle >= 360) {
+                            rotationAngle = 0; // Resetar para 0 quando alcançar 360 graus
+                        }
+                        // Girar a imagem de acordo com o ângulo atual
+                        Bitmap rotatedBitmap = rotateBitmap(bitmap, rotationAngle);
+                        imageView.setImageBitmap(rotatedBitmap); // Definir a imagem girada no ImageView
                     }
                 }
             }
@@ -208,44 +222,54 @@ public class PostarFragment extends Fragment {
             @Override
             public void onUsuarioCarregado(Usuario usuario) {
                 if (usuario != null) {
-                    // Salvo o id do usuario e tento salvar a imagem
+                    // Salvar o id do usuário e tentar salvar a imagem
                     post.setIdUsuario(usuario.getId());
                     StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts");
-                    StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(imageUri));
-                    fileReference.putFile(imageUri)
-                            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    // Se salvar a imagem, eu pego a Url
-                                    fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri downloadUrl) {
-                                            // Salvo a url no usuário e salvo ele
-                                            post.setImageUrl(downloadUrl.toString());
-                                            PostDAO postDAO = new PostDAO(post);
-                                            if (postDAO.save()){
-                                                Toast.makeText(requireContext(), "Salvo com sucesso", Toast.LENGTH_SHORT).show();
-                                                replaceFragment(new PerfilFragment());
-                                                mainActivity.changeSelectedItem(R.id.btnPerfil);
-                                            }
+                    StorageReference fileReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(imageUri));
+
+                    Bitmap bitmap = getBitmapFromUri(imageUri);
+                    if (bitmap != null) {
+                        // Aplicar rotação ao bitmap antes de salvá-lo
+                        Bitmap rotatedBitmap = rotateBitmap(bitmap, rotationAngle);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
+
+                        UploadTask uploadTask = fileReference.putBytes(data);
+                        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Se salvar a imagem, obter a URL
+                                fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri downloadUrl) {
+                                        // Salvar a URL no post e salvá-lo
+                                        post.setImageUrl(downloadUrl.toString());
+                                        PostDAO postDAO = new PostDAO(post);
+                                        if (postDAO.save()) {
+                                            Toast.makeText(requireContext(), "Salvo com sucesso", Toast.LENGTH_SHORT).show();
+                                            replaceFragment(new PerfilFragment());
+                                            mainActivity.changeSelectedItem(R.id.btnPerfil);
                                         }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    btnConfirmar.setEnabled(true);
-                                    btnImagem.setEnabled(true);
-                                    btnPhoto.setEnabled(true);
-                                    // Toast.makeText(Cadastro2.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                                    // Isso é para a barra de progresso funcionar
-                                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                                }
-                            });
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                btnConfirmar.setEnabled(true);
+                                btnImagem.setEnabled(true);
+                                btnPhoto.setEnabled(true);
+                                // Tratar falha no upload da imagem
+                            }
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                                // Isso é para a barra de progresso funcionar
+                                double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+                            }
+                        });
+                    }
                 } else {
                     btnConfirmar.setEnabled(true);
                     btnImagem.setEnabled(true);
@@ -276,9 +300,12 @@ public class PostarFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 112 && resultCode == RESULT_OK && data != null && data.getData() != null) {
             // Para imagem selecionada
+            isImageFromCamera = false;
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
         } else if (requestCode == pic_id) { // Para a imagem da camera
+            isImageFromCamera = true;
+
             Bitmap photo = (Bitmap) data.getExtras().get("data");
             imageUri = getImageUri(getActivity(), rotateBitmap(photo, 90));
             imageView.setImageURI(imageUri);
@@ -296,9 +323,17 @@ public class PostarFragment extends Fragment {
     private Uri getImageUri(Context context, Bitmap bitmap) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Imagem_Camera", null);
-        return Uri.parse(path);
+
+        if (isImageFromCamera) {
+            // Se a imagem foi tirada pela câmera, salva na galeria
+            return Uri.parse(MediaStore.Images.Media.insertImage(requireContext().getContentResolver(), bitmap, null, null));
+        } else {
+            // Se a imagem foi selecionada da galeria, apenas retorna a URI do bitmap
+            return Uri.parse("");
+        }
     }
+
+
 
     // Função para girar o Bitmap
     private Bitmap rotateBitmap(Bitmap bitmap, int degrees) {
