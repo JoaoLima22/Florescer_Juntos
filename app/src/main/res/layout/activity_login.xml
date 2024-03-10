@@ -99,11 +99,12 @@
         style="@style/btn"
         android:layout_width="159dp"
         android:layout_height="58dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="72dp"
         android:backgroundTint="@color/verdeCiano"
         android:text="LOGAR"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
     <com.google.android.gms.common.SignInButton
@@ -111,7 +112,8 @@
         android:layout_width="167dp"
         android:layout_height="55dp"
         android:layout_marginTop="72dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.719"
         app:layout_constraintStart_toEndOf="@+id/btnLogin"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
