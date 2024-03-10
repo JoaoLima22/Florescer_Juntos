@@ -60,9 +60,9 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitulo" />
 
     <EditText
-        android:id="@+id/edtEmailLogin"
+        android:id="@+id/edtEmailCadastro"
         style="@style/edtLogin"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         android:hint="Digite seu email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,20 +74,20 @@
     <TextView
         android:id="@+id/tvSenha"
         style="@style/labelLogin"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="50dp"
         android:text="SENHA:"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtEmailLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/edtEmailCadastro" />
 
     <EditText
         android:id="@+id/edtSenhaLogin"
         style="@style/edtLogin"
         android:hint="Digite sua senha"
         android:inputType="textPassword"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintEnd_toStartOf="@id/guideline_end"
@@ -99,12 +99,11 @@
         style="@style/btn"
         android:layout_width="159dp"
         android:layout_height="58dp"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="72dp"
         android:backgroundTint="@color/verdeCiano"
         android:text="LOGAR"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
     <com.google.android.gms.common.SignInButton
@@ -112,13 +111,12 @@
         android:layout_width="167dp"
         android:layout_height="55dp"
         android:layout_marginTop="72dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.719"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
         app:layout_constraintStart_toEndOf="@+id/btnLogin"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
     <TextView
-        android:id="@+id/tvCadastro"
+        android:id="@+id/btnRedirectLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Não tenho uma conta!"

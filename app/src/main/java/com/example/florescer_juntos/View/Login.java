@@ -1,8 +1,5 @@
 package com.example.florescer_juntos.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +12,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
@@ -32,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
@@ -52,10 +55,10 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Instancio o que preciso
-        tvSign = findViewById(R.id.tvCadastro);
+        tvSign = findViewById(R.id.btnRedirectLogin);
         googleAuth = findViewById(R.id.sign_in_button);
         btnLogin = findViewById(R.id.btnLogin);
-        edtEmail = findViewById(R.id.edtEmailLogin);
+        edtEmail = findViewById(R.id.edtEmailCadastro);
         edtSenha = findViewById(R.id.edtSenhaLogin);
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
