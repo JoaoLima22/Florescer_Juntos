@@ -10,15 +10,15 @@
 
     <ImageView
         android:id="@+id/imgBackground"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="1249dp"
+        android:layout_height="1431dp"
         android:layout_marginTop="-115dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.475"
+        app:layout_constraintVertical_bias="0.46"
         app:srcCompat="@drawable/login_background" />
 
     <ImageView
@@ -99,12 +99,11 @@
         style="@style/btn"
         android:layout_width="159dp"
         android:layout_height="58dp"
-        android:layout_marginStart="28dp"
         android:layout_marginTop="72dp"
         android:backgroundTint="@color/verdeCiano"
         android:text="LOGAR"
         android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
     <com.google.android.gms.common.SignInButton
@@ -112,8 +111,8 @@
         android:layout_width="167dp"
         android:layout_height="55dp"
         android:layout_marginTop="72dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.719"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/btnLogin"
         app:layout_constraintTop_toBottomOf="@+id/edtSenhaLogin" />
 
