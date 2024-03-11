@@ -351,19 +351,10 @@ public class EditarPerfilFragment extends Fragment {
                         updates.put("name", edtNome.getText().toString());
                         updates.put("phone", edtTelefone.getText().toString());
                         updates.put("desc", edtDesc.getText().toString());
+                        updates.put("photo", usuario.getImageUrl());
 
                         UsuarioDAO userDao = new UsuarioDAO(usuario);
-                        if (user_Google == null) {
-                            updates.put("mail", edtEmail.getText().toString());
-                            updates.put("password", edtSenha.getText().toString());
-                            userDao.updateUsuario(usuario.getId(), updates, FirebaseDatabase.getInstance().getReference("usuarios"));
-                            SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.clear();
-                            editor.putString("userLog", edtEmail.getText().toString());
-                            editor.commit();
-                            replaceFragment(new PerfilFragment());
-                        } else {
+                        if (user_Google != null) {
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users");
                             databaseReference.child(user_Google.getUid()).updateChildren(updates)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -378,6 +369,16 @@ public class EditarPerfilFragment extends Fragment {
                                             Log.e("Firebase", "Erro ao atualizar usuário", e);
                                         }
                                     });
+                            replaceFragment(new PerfilFragment());
+                        } else {
+                            updates.put("mail", edtEmail.getText().toString());
+                            updates.put("password", edtSenha.getText().toString());
+                            userDao.updateUsuario(usuario.getId(), updates, FirebaseDatabase.getInstance().getReference("usuarios"));
+                            SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.clear();
+                            editor.putString("userLog", edtEmail.getText().toString());
+                            editor.commit();
                             replaceFragment(new PerfilFragment());
                         }
                     }
