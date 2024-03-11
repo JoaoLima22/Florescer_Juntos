@@ -141,8 +141,7 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
 
         //Escondo os botões
         btnDelete.setVisibility(View.INVISIBLE);
-        btnEditarPerfil.setVisibility(View.INVISIBLE);
-
+//        btnEditarPerfil.setVisibility(View.INVISIBLE);
 //        // Removo os elementos
 //        ConstraintLayout constraintLayout = rootView.findViewById(R.id.constraintLayout);
 //        constraintLayout.removeView(tvImagem);
@@ -151,7 +150,6 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
 
 
         //pegar o usuario loggado
-
         UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
         String emailUsuario = "";
         String referenceLog = "";
