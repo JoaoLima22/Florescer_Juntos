@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -93,10 +92,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
             } else {
                 MenuItem save = menu.add(Menu.NONE, 1, 1, "Salvar post");
                 save.setOnMenuItemClickListener(this);
+                MenuItem commentary = menu.add(Menu.NONE, 3, 3, "Comentarios");
+                commentary.setOnMenuItemClickListener(this);
 
                 if (mPosts.get(getAdapterPosition()).getIdUsuario().equals(mUserId)) {
-                    MenuItem editar = menu.add(Menu.NONE, 3, 3, "Editar post");
-                    editar.setOnMenuItemClickListener(this);
+
                     MenuItem delete = menu.add(Menu.NONE, 4, 4, "Deletar post");
                     delete.setOnMenuItemClickListener(this);
                 } else {
@@ -122,7 +122,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                         mListener.onVerPerfilClick(position);
                         return true;
                     } else if (item.getItemId()==3) {
-                        mListener.onEditarClick(position);
+                        mListener.onComentarClick(position);
                         return true;
                     } else if (item.getItemId()==4) {
                         mListener.onDeleteClick(position);
@@ -146,7 +146,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
         void onVerPerfilClick(int position);
 
-        void onEditarClick(int position);
+        void onComentarClick(int position);
 
         void onDeleteClick(int position);
 

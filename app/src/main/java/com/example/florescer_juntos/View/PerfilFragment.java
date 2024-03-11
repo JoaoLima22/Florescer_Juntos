@@ -174,6 +174,10 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
                         tvTelefone.setText(usuario.getTelefone());
                         tvDescricao.setText(usuario.getDescricao());
 
+                        if(usuario.getId().equals("-NscKymtcrxWxhqItHyj")){
+                            btnDelete.setVisibility(View.INVISIBLE);
+                        }
+
                         //Seto o adapter com o user logado
                         mAdapter = new ImageAdapter(requireContext(), mPosts, usuario.getId());
                         mRecyclerView.setAdapter(mAdapter);
@@ -495,8 +499,45 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
     }
 
     @Override
-    public void onEditarClick(int position) {
+    public void onComentarClick(int position) {
+        if (isAdded()) {
+            Post selectedItem = mPosts.get(position);
+            SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("id_post", selectedItem.getId());
 
+
+            UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
+            String emailUsuario = "";
+            String reference = "";
+
+            // Verifico qual tipo de usuario
+            FirebaseUser user_Google = FirebaseAuth.getInstance().getCurrentUser();
+            if (user_Google != null) {
+                emailUsuario = user_Google.getEmail();
+                reference = "users";
+                editor.putString("tipo_user", "Google");
+            } else {
+                emailUsuario = sp.getString("userLog", "");
+                reference = "usuarios";
+                editor.putString("tipo_user", "Common");
+            }
+
+            // Busco o usuario e mostro seus dados
+            usuarioDAO.getUsuarioAsync(emailUsuario, FirebaseDatabase.getInstance().getReference(reference), getActivity(), new UsuarioDAO.UsuarioCallback() {
+                @Override
+                public void onUsuarioCarregado(Usuario usuario) {
+                    if (usuario != null) {
+                        editor.putString("id_user", usuario.getId());
+                        editor.putString("email_user", usuario.getEmail());
+                        editor.commit();
+                        replaceFragment(new ComentariosFragment());
+                    } else {
+                        Log.d("Usuario", "Usuário não encontrado");
+                    }
+                }
+            });
+        }
     }
 
     @Override

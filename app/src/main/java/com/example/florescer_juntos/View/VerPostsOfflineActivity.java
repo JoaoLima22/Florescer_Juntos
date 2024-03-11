@@ -81,7 +81,7 @@ public class VerPostsOfflineActivity extends AppCompatActivity implements ImageA
     }
 
     @Override
-    public void onEditarClick(int position) {
+    public void onComentarClick(int position) {
 
     }
 
