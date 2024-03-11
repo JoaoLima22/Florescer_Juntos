@@ -148,7 +148,6 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
 //        constraintLayout = rootView.findViewById(R.id.constraintLayoutBtns);
 //        constraintLayout.removeView(btnLogout);
 
-
         //pegar o usuario loggado
         UsuarioDAO usuarioDAO = new UsuarioDAO(new Usuario());
         String emailUsuario = "";
