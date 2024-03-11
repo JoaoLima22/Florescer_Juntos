@@ -63,7 +63,7 @@ import java.util.concurrent.ExecutionException;
 public class EditarPerfilFragment extends Fragment {
     EditText edtNome, edtTelefone, edtDesc, edtEmail, edtSenha, edtSenhaCon;
     Button btnConfirmar, btnCancelar;
-    TextView tvEmail, tvSenha, tvSenhaCon;
+    TextView tvEmail, tvSenha, tvSenhaCon, tvTelefone, tvDescricao, tvNome;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -121,6 +121,9 @@ public class EditarPerfilFragment extends Fragment {
         tvEmail = rootView.findViewById(R.id.tvEmail);
         tvSenha = rootView.findViewById(R.id.tvSenha);
         tvSenhaCon = rootView.findViewById(R.id.tvSenhaCon);
+        tvNome = rootView.findViewById(R.id.tvNome);
+        tvDescricao= rootView.findViewById(R.id.tvDescricao);
+        tvTelefone= rootView.findViewById(R.id.tvTelefone);
         btnConfirmar = rootView.findViewById(R.id.btnEditarPerfil);
         btnCancelar = rootView.findViewById(R.id.btnCancelarPerfil);
         SharedPreferences sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
@@ -303,9 +306,9 @@ public class EditarPerfilFragment extends Fragment {
     // Método que esconde os campos para usuários do google
     private void removerCampos(View rootView){
         // Ajusto os elementos que ficariam bugados
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) edtTelefone.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) tvTelefone.getLayoutParams();
         layoutParams.topToBottom = R.id.edtNomeEdtPerfil;
-        edtTelefone.setLayoutParams(layoutParams);
+        tvTelefone.setLayoutParams(layoutParams);
 
         // Removo os elementos
         ConstraintLayout constraintLayout = rootView.findViewById(R.id.constraintLayout6);
