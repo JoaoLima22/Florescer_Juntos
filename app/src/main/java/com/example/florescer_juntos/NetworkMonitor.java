@@ -14,6 +14,15 @@ public class NetworkMonitor extends Thread {
 
     public NetworkMonitor(Context context) {
         this.context = context.getApplicationContext();
+        if (isConnectedToInternet()) {
+            // Se estiver conectado, fala que não está offline
+            this.isOffline=false;
+
+        } else {
+            // Se não estiver conectado, fala que está offline
+            this.isOffline=true;
+        }
+
     }
 
     @Override
