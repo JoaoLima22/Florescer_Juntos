@@ -58,7 +58,7 @@ import java.util.List;
 public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemClickListener {
     TextView tvNome, tvEmail, tvTelefone, tvDescricao, tvImagem;
     ImageView imageView;
-    Button btnLogout, btnEditarPerfil, btnDelete;
+    Button btnEditarPerfil, btnDelete;
     SharedPreferences sp;
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
@@ -128,7 +128,6 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
         tvEmail = rootView.findViewById(R.id.tvEmailVer);
         tvTelefone = rootView.findViewById(R.id.tvTelefoneVer);
         tvDescricao = rootView.findViewById(R.id.tvDescricaoVer);
-        tvImagem = rootView.findViewById(R.id.tvImagemVer);
         imageView = rootView.findViewById(R.id.imagemVerPerfil);
         btnDelete = rootView.findViewById(R.id.btnDeleteVer);
         sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
@@ -144,11 +143,11 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
         btnDelete.setVisibility(View.INVISIBLE);
         btnEditarPerfil.setVisibility(View.INVISIBLE);
 
-        // Removo os elementos
-        ConstraintLayout constraintLayout = rootView.findViewById(R.id.constraintLayout);
-        constraintLayout.removeView(tvImagem);
-        constraintLayout = rootView.findViewById(R.id.constraintLayoutBtns);
-        constraintLayout.removeView(btnLogout);
+//        // Removo os elementos
+//        ConstraintLayout constraintLayout = rootView.findViewById(R.id.constraintLayout);
+//        constraintLayout.removeView(tvImagem);
+//        constraintLayout = rootView.findViewById(R.id.constraintLayoutBtns);
+//        constraintLayout.removeView(btnLogout);
 
 
         //pegar o usuario loggado

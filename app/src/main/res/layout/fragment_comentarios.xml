@@ -22,7 +22,7 @@
             android:background="@drawable/perfil_circulo"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/dono_post"
             android:layout_marginEnd="10dp"/>
 
 
@@ -99,14 +99,13 @@
                 android:id="@+id/image_profile1"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@drawable/perfil_circulo"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ExtraText,MissingConstraints"
-                tools:src="@tools:sample/avatars" />
+                android:src="@drawable/usuario_comentando" />
 
             <EditText
                 android:id="@+id/editTextComentar"

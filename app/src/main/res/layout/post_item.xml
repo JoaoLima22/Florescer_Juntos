@@ -20,7 +20,7 @@
             android:background="@drawable/perfil_circulo"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/dono_post"
             android:layout_marginEnd="10dp"/>
 
 
@@ -29,10 +29,10 @@
             android:id="@+id/tvNomeUsuario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="Email do usuário"
             android:textColor="@color/black"
-            android:text="Email do usuário"/>
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

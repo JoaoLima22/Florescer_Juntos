@@ -97,7 +97,7 @@
     <Button
         android:id="@+id/btnLogin"
         style="@style/btn"
-        android:layout_width="159dp"
+        android:layout_width="150dp"
         android:layout_height="58dp"
         android:layout_marginTop="72dp"
         android:backgroundTint="@color/verdeCiano"
@@ -108,7 +108,7 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="167dp"
+        android:layout_width="150dp"
         android:layout_height="55dp"
         android:layout_marginTop="72dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline_end"

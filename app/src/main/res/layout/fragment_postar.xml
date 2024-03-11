@@ -1,209 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@drawable/login_background"
+tools:context=".View.PostarFragment">
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:background="@color/green"
-    tools:context=".View.PostarFragment">
+    android:layout_height="match_parent">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+
+    <ImageView
+        android:id="@+id/imgBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="1300dp"
+        android:layout_marginTop="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/login_box" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/edtDescPost"
+        style="@style/edtLogin"
+        android:hint="Digite sua descrição (opcional)"
+        android:inputType="text"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toEndOf="@id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tvDesc" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+    <TextView
+        android:id="@+id/tvImg"
+        style="@style/labelLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="IMAGEM:"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/edtDescPost" />
+
+    <TextView
+        android:id="@+id/tvDesc"
+        style="@style/labelLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="DESCRIÇÃO:"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    <TextView
+        android:id="@+id/ttlPost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:fontFamily="sans-serif"
+        android:text="Criar Postagem"
+        android:textColor="@color/black"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/imgBox" />
+
+    <Button
+        android:id="@+id/btnConfirmarPost2"
+        style="@style/btn"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:backgroundTint="@color/verdeCiano"
+        android:text="SALVAR"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/btnImagemPost"
+        app:layout_constraintVertical_bias="0.193" />
+
+    <TextView
+        android:id="@+id/tvType"
+        style="@style/labelLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="TIPO DE PLANTA:"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/ttlPost" />
+
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvType"
+        app:layout_constraintTop_toBottomOf="@+id/tvType">
+
+        <RadioButton
+            android:id="@+id/radioButton1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/white_background"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="48dp"
+            android:text="Suculenta"
+            android:textColor="@color/black" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Flor"
+            android:textColor="@color/black" />
 
-                <TextView
-                    android:id="@+id/ttlPost"
-                    style="@style/titleStyle"
-                    android:layout_marginTop="15dp"
-                    android:text="Criando um post"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Hortaliça"
+            android:textColor="@color/black" />
 
-                <RadioGroup
-                    android:id="@+id/radioGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="48dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/tvType"
-                    app:layout_constraintTop_toBottomOf="@+id/ttlPost">
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Outro"
+            android:textColor="@color/black" />
 
-                    <RadioButton
-                        android:id="@+id/radioButton1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:text="Suculenta"
-                        android:textColor="@color/black" />
+    </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/radioButton2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:textColor="@color/black"
-                        android:text="Flor" />
+    <ImageView
+        android:id="@+id/imagemPostar"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/tvImg"
+        tools:srcCompat="@drawable/perfil_image" />
 
-                    <RadioButton
-                        android:id="@+id/radioButton3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:textColor="@color/black"
-                        android:text="Hortaliça" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
-                    <RadioButton
-                        android:id="@+id/radioButton4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:textColor="@color/black"
-                        android:text="Outro" />
 
-                </RadioGroup>
 
-                <TextView
-                    android:id="@+id/tvType"
-                    style="@style/edts"
-                    android:layout_marginBottom="120dp"
-                    android:gravity="start"
-                    android:text="Selecione o tipo:"
-                    app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+<!--    BOTOES   -->
 
-                <EditText
-                    android:id="@+id/edtDescPost"
-                    style="@style/edts"
-                    android:layout_marginTop="20dp"
-                    android:hint="Digite sua descrição"
-                    android:inputType="text"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
-                <TextView
-                    android:id="@+id/tvDesc"
-                    style="@style/edts"
-                    android:layout_marginBottom="33dp"
-                    android:gravity="start"
-                    android:text="Descrição:"
-                    app:layout_constraintBottom_toBottomOf="@+id/edtDescPost"
-                    app:layout_constraintStart_toStartOf="@+id/edtDescPost" />
+    <Button
+        android:id="@+id/btnImagemPost"
+        style="@style/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="65dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/blue"
+        android:text="Selecionar Imagem"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btnRotateImg"
+        app:layout_constraintStart_toEndOf="@+id/btnPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/imagemPostar" />
 
-                <ImageView
-                    android:id="@+id/imagemPostar"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/edtDescPost"
-                    tools:srcCompat="@drawable/perfil_image" />
+    <Button
+        android:id="@+id/btnPhoto"
+        style="@style/btn"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        app:icon="@drawable/baseline_photo_camera_24"
+        app:iconGravity="textTop"
+        app:iconSize="25dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/imagemPostar" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:id="@+id/btnRotateImg"
+        style="@style/btn"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="48dp"
+        android:backgroundTint="@color/blue"
+        android:textColor="@color/white"
+        app:icon="@drawable/rodar_img"
+        app:iconGravity="textTop"
+        app:iconSize="25dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toBottomOf="@+id/imagemPostar" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout6">
 
-                <Button
-                    android:id="@+id/btnPhoto"
-                    style="@style/btn"
-                    android:layout_width="50dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/blue"
-                    android:textColor="@color/white"
-                    app:icon="@drawable/baseline_photo_camera_24"
-                    app:iconGravity="textTop"
-                    app:iconSize="25dp"
-                    android:text="Tirar foto"
-                    app:layout_constraintStart_toEndOf="@+id/btnImagemPost"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <Button
-                    android:id="@+id/btnImagemPost"
-                    style="@style/btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/blue"
-                    android:text="Escolher Imagem"
-                    android:textColor="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <Button
-                android:id="@+id/btnRotateImg"
-                style="@style/btn"
-                android:layout_width="122dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/blue"
-                android:text="Girar"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.994"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
-                app:layout_constraintVertical_bias="1.0" />
-
-            <Button
-                android:id="@+id/btnConfirmarPost2"
-                style="@style/btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/blue"
-                android:text="Salvar post"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.094"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
-                app:layout_constraintVertical_bias="1.0" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </FrameLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
