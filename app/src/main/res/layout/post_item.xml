@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:layout_margin="10dp">
 
@@ -39,8 +39,8 @@
     <!-- Imagem do Post -->
     <ImageView
         android:id="@+id/ivImagePost"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:layout_below="@id/tvNomeUsuario"
         android:layout_marginTop="57dp"
         android:scaleType="centerCrop"
