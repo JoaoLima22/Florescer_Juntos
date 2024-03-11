@@ -1,146 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/btnLog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/green"
-    tools:context=".View.ComentariosFragment">
+    tools:context=".View.ComentariosFragment"
+    android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+
+        <!-- Imagem de perfil - colocar circular -->
+        <ImageView
+            android:id="@+id/image_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/perfil_circulo"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginEnd="10dp"/>
+
+
+        <!-- Nome de usuário -->
+        <TextView
+            android:id="@+id/NomeComentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email do usuário"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <!-- Imagem do Post -->
+    <ImageView
+        android:id="@+id/ImageComentario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvNomeUsuario"
+        android:layout_marginTop="57dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"
+        android:adjustViewBounds="true"
+        android:background="@drawable/login_background"
+        tools:ignore="NotSibling" />
+
+    <!-- Layout para ícones de ação -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ImageComentario"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/DescComentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Descrição"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/TipoComentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/DescComentario"
+            android:layout_marginStart="8dp"
+            android:text="Tipo"
+            android:textSize="16sp" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/postsViewComentario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TipoComentario"
+            android:layout_above="@id/bottom" />
+
+        <RelativeLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#FFF"
+            android:padding="4dp">
 
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintComent"
+            <ImageView
+                android:id="@+id/image_profile1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/perfil_circulo"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ExtraText,MissingConstraints"
+                tools:src="@tools:sample/avatars" />
+
+            <EditText
+                android:id="@+id/editTextComentar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <!-- Aqui o post e os comentários-->
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toLeftOf="@id/btnComentar"
+                android:layout_toRightOf="@id/image_profile1"
+                android:autofillHints=""
+                android:background="@android:color/transparent"
+                android:hint="Digite seu comentário..."
+                android:minHeight="48dp" />
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/white_background"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+            <Button
+                android:id="@+id/btnComentar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:text="Comentar"
+                android:backgroundTint="@color/verdeCiano"
+                android:textColor="@color/white" />
 
-                    <TextView
-                        android:id="@+id/NomeComentatio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Nome"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
+        </RelativeLayout>
 
-                    <ImageView
-                        android:id="@+id/ImageComentario"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:contentDescription="Imagem" />
-
-                    <TextView
-                        android:id="@+id/DescComentario"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Descrição"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/TipoComentario"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Tipo"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <EditText
-                    android:id="@+id/editTextComentar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:hint="Digite seu comentario"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                    android:paddingBottom="10dp"
-                    android:paddingStart="10dp"/>
-
-                <Button
-                    android:id="@+id/btnComentar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:text="Comentar"
-                    android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/editTextComentar"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/green"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextComentar">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/postsViewComentario"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:background="@color/green"
-                        android:backgroundTint="@color/green"
-                        android:paddingTop="0dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-                <ProgressBar
-                    android:id="@+id/progress_circle_comentario"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:foregroundGravity="center"
-                    android:paddingTop="50dp"
-                    android:progressTint="@color/blue"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+        <ProgressBar
+            android:id="@+id/progress_circle_comentario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/postsViewComentario"
+            android:layout_alignTop="@+id/postsViewComentario"
+            android:layout_alignEnd="@+id/postsViewComentario"
+            android:layout_alignBottom="@+id/postsViewComentario"
+            android:layout_marginStart="166dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="181dp"
+            android:layout_marginBottom="47dp"
+            android:foregroundGravity="center"
+            android:paddingTop="50dp"
+            android:progressTint="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </RelativeLayout>
+</RelativeLayout>

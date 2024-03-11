@@ -22,13 +22,15 @@
                 android:id="@+id/btnFiltroTipo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/blue"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="@color/verdeCiano"
                 android:text="Buscar por tipo"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

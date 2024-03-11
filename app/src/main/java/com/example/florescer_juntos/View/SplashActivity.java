@@ -22,8 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashActivity extends AppCompatActivity {
     ImageView imgGif;
-    //private static final int splashTime = 10000; // 10000 milliseconds = 10 segundos
-    private static final int splashTime = 1000; // Só durante o desenvolvimento
+    private static final int splashTime = 10000; // 10000 milliseconds = 10 segundos
+//    private static final int splashTime = 1000; // Só durante o desenvolvimento
     private ProgressBar progressBar;
 
     @Override

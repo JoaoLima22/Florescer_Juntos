@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.florescer_juntos.ComentarioAdapter;
 import com.example.florescer_juntos.Controler.ComentarioDAO;
-import com.example.florescer_juntos.ImageAdapter;
 import com.example.florescer_juntos.Model.Comentario;
 import com.example.florescer_juntos.Model.Post;
 import com.example.florescer_juntos.R;
@@ -103,7 +102,7 @@ public class ComentariosFragment extends Fragment implements ComentarioAdapter.O
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_comentarios, container, false);
 
-        tvEmail = rootView.findViewById(R.id.NomeComentatio);
+        tvEmail = rootView.findViewById(R.id.NomeComentario);
         tvDesc = rootView.findViewById(R.id.DescComentario);
         tvTipo = rootView.findViewById(R.id.TipoComentario);
         imagemView = rootView.findViewById(R.id.ImageComentario);
@@ -202,7 +201,7 @@ public class ComentariosFragment extends Fragment implements ComentarioAdapter.O
         btnComentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtComentar.getText().toString().equals("")){
+                if (edtComentar.getText().toString().equals("")) {
                     edtComentar.setError("Digite algo!");
                 } else {
                     String text = edtComentar.getText().toString();
@@ -216,14 +215,17 @@ public class ComentariosFragment extends Fragment implements ComentarioAdapter.O
 
                     ComentarioDAO comentarioDAO = new ComentarioDAO(coment);
 
-                    if(comentarioDAO.save()){
+                    if (comentarioDAO.save()) {
                         Toast.makeText(requireContext(), "Comentário salvo", Toast.LENGTH_SHORT).show();
-                        replaceFragment(new ComentariosFragment());
+                        edtComentar.setText(""); // Limpa o campo de comentário após adicionar
+
+                        // Atualiza apenas a lista de comentários na RecyclerView
+                        mComentarios.add(coment); // Adiciona o novo comentário à lista
+                        mAdapter.notifyDataSetChanged(); // Notifica o adaptador sobre a mudança na lista
                     }
                 }
             }
         });
-
         return rootView;
     }
 

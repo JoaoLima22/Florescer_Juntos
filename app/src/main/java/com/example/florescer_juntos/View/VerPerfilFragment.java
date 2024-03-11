@@ -130,8 +130,6 @@ public class VerPerfilFragment extends Fragment implements ImageAdapter.OnItemCl
         tvDescricao = rootView.findViewById(R.id.tvDescricaoVer);
         tvImagem = rootView.findViewById(R.id.tvImagemVer);
         imageView = rootView.findViewById(R.id.imagemVerPerfil);
-        btnLogout = rootView.findViewById(R.id.btnLogoutVer);
-        btnEditarPerfil = rootView.findViewById(R.id.btnEditarPerfilVer);
         btnDelete = rootView.findViewById(R.id.btnDeleteVer);
         sp = requireActivity().getSharedPreferences("Florescer_Juntos", Context.MODE_PRIVATE);
 
