@@ -1,7 +1,9 @@
 package com.example.florescer_juntos.View;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -27,10 +29,12 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.florescer_juntos.Controler.PostDAO;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.ImageAdapter;
+import com.example.florescer_juntos.Model.Comentario;
 import com.example.florescer_juntos.Model.Post;
 import com.example.florescer_juntos.Model.Usuario;
 import com.example.florescer_juntos.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -389,20 +393,38 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
 
     @Override
     public void onDeleteClick(int position) {
-        Post selectedItem = mPosts.get(position);
-        final String selectedKey = selectedItem.getId();
-        // Deleto a imagem no storage
-        StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageUrl());
-        imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+        // Gero um alerta
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Confirmação");
+        builder.setMessage("Tem certeza que deseja deletar este post?");
+        builder.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
-            public void onSuccess(Void unused) {
-                Log.d("FirebaseStorage", "Arquivo excluído com sucesso");
-                // Deleto os dados do post do database
-                databaseReference.child(selectedKey).removeValue();
-                Toast.makeText(requireContext(), "Post deletado", Toast.LENGTH_SHORT).show();
-                replaceFragment(new HomeFragment());
+            public void onClick(DialogInterface dialog, int which) {
+                Post selectedItem = mPosts.get(position);
+                final String selectedKey = selectedItem.getId();
+                // Deleto a imagem no storage
+                StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageUrl());
+                imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("FirebaseStorage", "Arquivo excluído com sucesso");
+                        // Deleto os dados do post do database
+                        databaseReference.child(selectedKey).removeValue();
+                        Toast.makeText(requireContext(), "Post deletado", Toast.LENGTH_SHORT).show();
+                        replaceFragment(new HomeFragment());
+                        deleteComents(selectedItem);
+                    }
+                });
+            }
+
+        });
+        builder.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // O usuário cancelou, não faz nada
             }
         });
+        builder.show();
     }
 
     @Override
@@ -416,5 +438,51 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
+    }
+    private void deleteComents(Post post){
+        List<Comentario> comentarios = new ArrayList<>();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("coments");
+        databaseReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    comentarios.clear(); // Limpar a lista atual de comentários
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        // Buscar os comentários
+                        Comentario coment = new Comentario();
+                        coment.setId(dataSnapshot.getKey());
+                        coment.setIdUsuario(dataSnapshot.child("idUser").getValue(String.class));
+                        coment.setIdPost(dataSnapshot.child("idPost").getValue(String.class));
+                        coment.setEmailUsuario(dataSnapshot.child("mailUser").getValue(String.class));
+                        coment.setTipoUsuario(dataSnapshot.child("typeUser").getValue(String.class));
+                        coment.setTexto(dataSnapshot.child("text").getValue(String.class));
+
+                        if (coment.getIdPost().equals(post.getId())){
+                            comentarios.add(coment);
+                        }
+                    }
+                    for (Comentario coment: comentarios){
+                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("coments").child(coment.getId());
+                        databaseReference.removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Comentário deletado com sucesso
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // Falha ao deletar o comentário
+                                        Toast.makeText(requireContext(), "Erro ao tentar deletar", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                } else {
+                    // Ocorreu um erro ao buscar o post
+                }
+            }
+        });
     }
 }
