@@ -102,6 +102,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 } else {
                     MenuItem ver = menu.add(Menu.NONE, 2, 2, "Ver perfil");
                     ver.setOnMenuItemClickListener(this);
+                    if(mUserId.equals("-NscKymtcrxWxhqItHyj")){
+                        MenuItem delete = menu.add(Menu.NONE, 4, 4, "Deletar post");
+                        delete.setOnMenuItemClickListener(this);
+                    }
                 }
             }
         }

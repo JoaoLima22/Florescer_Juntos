@@ -30,6 +30,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.example.florescer_juntos.Controler.PostDAO;
 import com.example.florescer_juntos.Controler.UsuarioDAO;
 import com.example.florescer_juntos.ImageAdapter;
 import com.example.florescer_juntos.Model.Post;
@@ -50,6 +53,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -448,9 +453,40 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
 
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onSaveClick(int position) {
+        // Salva a imagem localmente
+        Post selectedItem = mPosts.get(position);
+        PostDAO postDAO = new PostDAO(selectedItem, requireContext());
+        if(postDAO.isPostSaved(selectedItem.getId())){
+            if(postDAO.updatePost()){
+                Toast.makeText(requireContext(), "Post atualizado", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Glide.with(requireContext())
+                    .load(selectedItem.getImageUrl())
+                    .downloadOnly(new SimpleTarget<File>() {
+                        @Override
+                        public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
+                            // A imagem foi baixada com sucesso, agora você pode salvar o caminho do arquivo local
+                            String imagePath = resource.getAbsolutePath();
+                            // Salve o caminho da imagem local no banco de dados ou onde preferir
+                            selectedItem.setImageUrl(imagePath);
 
+                            if(postDAO.isPostSaved(selectedItem.getId())){
+                                if(postDAO.updatePost()){
+                                    Toast.makeText(requireContext(), "Post atualizado", Toast.LENGTH_SHORT).show();
+                                }
+                            } else{
+                                postDAO.setPost(selectedItem);
+                                if(postDAO.saveOffline()){
+                                    Toast.makeText(requireContext(), "Post salvo", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+        }
     }
 
     @Override
@@ -479,6 +515,7 @@ public class PerfilFragment extends Fragment implements ImageAdapter.OnItemClick
             }
         });
     }
+
 
     @Override
     public void onDeleteOffClick(int position) {

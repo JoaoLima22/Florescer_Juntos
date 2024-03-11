@@ -142,12 +142,13 @@ public class PostDAO {
 
         return postSaved;
     }
-    public Post getPostById(String postId) {
+    public List<Post> getPostByIdUser(String userId) {
+        List<Post> postList = new ArrayList<>();
         SQLiteDatabase dbLite = this.db.getReadableDatabase();
 
         String[] projection = {"id", "descricao", "userId", "image", "type", "typeUser", "datetime", "mailUser"};
-        String selection = "id = ?";
-        String[] selectionArgs = {postId};
+        String selection = "userId = ?";
+        String[] selectionArgs = {userId};
 
         Cursor c = dbLite.query(
                 "post",
@@ -159,22 +160,26 @@ public class PostDAO {
                 null
         );
 
-        Post post = null;
-        if (c != null && c.moveToFirst()) {
-            post = new Post();
-            post.setId(c.getString(0));
-            post.setDescricao(c.getString(1));
-            post.setIdUsuario(c.getString(2));
-            post.setImageUrl(c.getString(3));
-            post.setTipoPlanta(c.getString(4));
-            post.setTipoUsuario(c.getString(5));
-            post.setDataHora(c.getString(6));
-            post.setEmailUsuario(c.getString(7));
+        // Percorre todas as linhas de resultados
+        if (c != null) {
+            while (c.moveToNext()) {
+                Post post = new Post();
+                post.setId(c.getString(0));
+                post.setDescricao(c.getString(1));
+                post.setIdUsuario(c.getString(2));
+                post.setImageUrl(c.getString(3));
+                post.setTipoPlanta(c.getString(4));
+                post.setTipoUsuario(c.getString(5));
+                post.setDataHora(c.getString(6));
+                post.setEmailUsuario(c.getString(7));
+                postList.add(post);
+            }
             c.close();
         }
 
-        return post;
+        return postList;
     }
+
 
     public boolean deletePost() {
         SQLiteDatabase dbLite = this.db.getWritableDatabase();

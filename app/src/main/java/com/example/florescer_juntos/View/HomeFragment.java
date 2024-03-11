@@ -336,6 +336,7 @@ public class HomeFragment extends Fragment implements ImageAdapter.OnItemClickLi
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("id_user_ver", selectedItem.getIdUsuario());
         editor.putString("tipo_user_ver", selectedItem.getTipoUsuario());
+        editor.putString("email_user_ver", selectedItem.getEmailUsuario());
         editor.commit();
 
         // Mando pro fragment desejado e altero
